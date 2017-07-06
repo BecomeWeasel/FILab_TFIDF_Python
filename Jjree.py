@@ -124,27 +124,29 @@ savefile = open('(01)Graphene_5446_1.csv', 'w')
 # masterTxtFile = open('(02)Photolithography_6619 PatSnap MASTER TEXT FILE.csv', 'r+')
 HPPListFile = open('(03)DSSC_9501 PatSnap v.02 HPP List.csv', 'r+')
 
-# csvfile = open('(02)Photolithography_3623 ORIGINAL.csv', 'r+')
-# savefile = open('(02)Photolithography_3623_1.csv', 'w')
+'''
+csvfile = open('(02)Photolithography_3623 ORIGINAL.csv', 'r+')
+savefile = open('(02)Photolithography_3623_1.csv', 'w')
 
 # error from 1578 had to restart program from 1578
-# csvfile = open('(02)Photolithography_3623 ORIGINAL 1578 to end.csv', 'r+')
-# savefile = open('(02)Photolithography_3623_2.csv', 'w')
+csvfile = open('(02)Photolithography_3623 ORIGINAL 1578 to end.csv', 'r+')
+savefile = open('(02)Photolithography_3623_2.csv', 'w')
 
 # RUNNING NEW PATENT SET OF PHOTOLITHOGRAPHY FROM PATSNAP 96 PATENTS OF THE MAIN PATH
-# csvfile = open('(02)Photolithography_6619 PatSnap v.02 obtaining keywords.csv', 'r+')
-# savefile = open('(02)Photolithography_6619 PatSnap v.02 obtaining keywords OUTPUT.csv', 'w')
+csvfile = open('(02)Photolithography_6619 PatSnap v.02 obtaining keywords.csv', 'r+')
+savefile = open('(02)Photolithography_6619 PatSnap v.02 obtaining keywords OUTPUT.csv', 'w')
 
 # NEW PATENT SET OF PHOTOLITHOGRAPHY FROM PATSNAP ALL PATENTS
-# csvfile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents.csv', 'r+')
-# savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents OUTPUT.csv', 'w')
+csvfile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents.csv', 'r+')
+savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents OUTPUT.csv', 'w')
 
-# csvfile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents 3112 to end.csv', 'r+')
-# savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents OUTPUT 3112 to end.csv', 'w')
+csvfile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents 3112 to end.csv', 'r+')
+savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents OUTPUT 3112 to end.csv', 'w')
 
 # NEW PATENT SET OF PHOTOLITHOGRAPHY FROM PATSNAP after 2nd error/stop from 1547 of 3112 to end file
-# csvfile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents 1547 to end 2.csv', 'r+')
-# savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents OUTPUT 1547 to end 2.csv', 'w')
+csvfile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents 1547 to end 2.csv', 'r+')
+savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extraction of all patents OUTPUT 1547 to end 2.csv', 'w')
+'''
 
 # DSSC PATENT SET FROM PATSNAP DIVIDED BY YEAR
 yearOfPatents = 2004
@@ -313,7 +315,7 @@ for url in reader:
 
     urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
 
-    if (urlText == None):
+    if (urlText is None):  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
         continue
 
     backCitationText = ""
@@ -955,12 +957,14 @@ for sent in sents:
             continue
         
         '''
+
 '''
         stopword = vocab.(hyphen_tag[0])
         if stopword.is_stop:
             print("STOPWORDWASHERE")
             continue
         '''
+
 '''   
             
         #if hyphen_tag[0] == u"(" or u")" and hyphen_tag[1] == u"PUNCT":
@@ -1110,6 +1114,7 @@ for sent in sents:
             
     print(svos)
     '''
+
 '''
     for tok in clean_hyphen_tags:
             
