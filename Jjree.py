@@ -594,6 +594,7 @@ print(errorPatents)
 timeStart = time.time()
 
 print("-----Calculating TF-IDF----- 2GRAM")
+
 i = 0
 # print(fullPatentVocabDict2Gram)
 for patNum in fullPatentVocabDict2Gram:
@@ -623,8 +624,8 @@ for patNum in fullPatentVocabDict2Gram:
                 word1 = tuple(word1)
                 fullPatentVocabDict2Gram[i][j] = word1
                 j += 1
-
         k += 1
+
 timeNow = time.time()
 print("It has been {0} seconds for the 2Gram CALCULATION to END".format(timeNow - timeStart))
 
@@ -657,7 +658,7 @@ for patent in sortedFullPatentVocabDict2Gram:
 p = 1
 for patent in sortedFullPatentVocabDict2Gram:
     tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict2Gram[p])])
-    tfidfText.decode() # L:659 encode('utf-8') delete, add decode() to L:660 @11:58
+    # L:659 'encode('utf-8')' delete @7.7 16:07
     writer2gramTFIDF.writerow(tfidfText.split(","))
     p += 1
 
@@ -667,7 +668,10 @@ print("It has been {0} seconds for the 2Gram SAVING to END".format(timeNow - tim
 ##################################################################################
 # CALCULATING TF-IDF 3GRAM
 ##################################################################################
+timeStart = time.time()
+
 print("-----Calculating TF-IDF----- 3GRAM")
+
 i = 0
 for patNum in fullPatentVocabDict3Gram:
     i += 1
@@ -692,6 +696,12 @@ for patNum in fullPatentVocabDict3Gram:
                 j += 1
         k += 1
 
+timeNow = time.time()
+print("It has been {0} seconds for the 3Gram CALCULATION to END".format(timeNow - timeStart))
+
+timeStart = time.time()
+print("-----SORTING TF-IDF----- 3GRAM")
+
 # SORTING 3 GRAM WORDS
 i = 1
 sortedFullPatentVocabDict3Gram = fullPatentVocabDict3Gram
@@ -702,7 +712,11 @@ for patent in sortedFullPatentVocabDict3Gram:
     except:
         i += 1
         continue
+timeNow = time.time()
+print("It has been {0} seconds for the 3Gram SORTING to END".format(timeNow - timeStart))
 
+timeStart = time.time()
+print("-----SAVING TF-IDF----- 3GRAM")
 # CHANGING 3GRAM TO WORD:TF-IDF FORMAT THEN SAVING TO FILE
 k = 1
 for patent in sortedFullPatentVocabDict3Gram:
@@ -718,18 +732,21 @@ for patent in sortedFullPatentVocabDict3Gram:
     k += 1
 p = 1
 for patent in sortedFullPatentVocabDict3Gram:
-    try:
-        tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict3Gram[p])]).encode('utf-8')
-        writer3gramTFIDF.writerow(tfidfText.split(","))
-        p += 1
-    except:
-        print("##########ERROR SAVE 3GRAM 2ND")
-        p += 1
-        continue
+    tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict3Gram[p])])
+    # L:721 'encode('utf-8')' delete @7.7 16:07
+    writer3gramTFIDF.writerow(tfidfText.split(","))
+    p += 1
+
+timeNow = time.time()
+print("It has been {0} seconds for the 3Gram SAVING to END".format(timeNow - timeStart))
+
 ##################################################################################
 # CALCULATING TF-IDF 4GRAM
 ##################################################################################
+timeStart = time.time()
+
 print("-----Calculating TF-IDF----- 4GRAM")
+
 i = 0
 for patNum in fullPatentVocabDict4Gram:
     i += 1
@@ -754,6 +771,11 @@ for patNum in fullPatentVocabDict4Gram:
                 j += 1
         k += 1
 
+timeNow = time.time()
+print("It has been {0} seconds for the 4Gram CALCULATION to END".format(timeNow - timeStart))
+
+timeStart = time.time()
+print("-----SORTING TF-IDF----- 4GRAM")
 # SORTING 4 GRAM WORDS
 i = 1
 sortedFullPatentVocabDict4Gram = fullPatentVocabDict4Gram
@@ -764,7 +786,11 @@ for patent in sortedFullPatentVocabDict4Gram:
     except:
         i += 1
         continue
+timeNow = time.time()
+print("It has been {0} seconds for the 4Gram SORTING to END".format(timeNow - timeStart))
 
+timeStart = time.time()
+print("-----SAVING TF-IDF----- 4GRAM")
 # CHANGING 4GRAM TO WORD:TF-IDF FORMAT THEN SAVING TO FILE
 k = 1
 for patent in sortedFullPatentVocabDict4Gram:
@@ -779,13 +805,13 @@ for patent in sortedFullPatentVocabDict4Gram:
     k += 1
 p = 1
 for patent in sortedFullPatentVocabDict4Gram:
-    try:
-        tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict4Gram[p])]).encode('utf-8')
-        writer4gramTFIDF.writerow(tfidfText.split(","))
-        p += 1
-    except:
-        p += 1
-        continue
+    tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict4Gram[p])])
+    # L:779 'encode('utf-8')' delete @7.7 16:07
+    writer4gramTFIDF.writerow(tfidfText.split(","))
+    p += 1
+
+timeNow = time.time()
+print("It has been {0} seconds for the 4Gram SAVING to END".format(timeNow - timeStart))
 
 print("END OF PROGRAM")
 csvfile.close()
