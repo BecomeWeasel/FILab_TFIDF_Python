@@ -11,12 +11,7 @@ from alchemyapi import AlchemyAPI
 from pathlib import Path
 import json
 import time
-
-########################Temporary modification#################################
-######################## 7.6 20:34            #################################
-import io
-
-###############################################################################
+import multiprocessing
 
 
 import nltk
@@ -77,11 +72,6 @@ import JjreeTFIDF
 import JjreeTFIDFNgram
 import DFReader
 from spacy.lemmatizer import lemmatize
-
-'''
-import sys
-sys.path.insert(0, "/usr/local/lib/python2.7/dist-packages/spacy")
-'''
 
 # from tokenizer_exceptions import TOKENIZER_EXCEPTIONS, ORTH_ONLY
 
@@ -299,303 +289,328 @@ for key in HPPwordList.keys():
     writerDFLIST.writerow(HPPwordList1.split(","))
 '''
 
-# GETTING TEXT FROM GOOGLE PATENT WEBSITES
-for url in reader:
-    textVocabs = {}
-    textVocabs_items = {}
-    textVocabsAscending = {}
-    textVocabsAscending1 = []
-    textVocabsDeps = {}
-    textVocabsTags = {}
-    totalWordsInDoc = 0
 
-    newUrl = ''.join(['https://patents.google.com/patent/', url[0], '/en'])
+def getPatentAndCalcTF(End, Start):
+    # GETTING TEXT FROM GOOGLE PATENT WEBSITES
+    for url in reader:
+        textVocabs = {}
+        textVocabs_items = {}
+        textVocabsAscending = {}
+        textVocabsAscending1 = []
+        textVocabsDeps = {}
+        textVocabsTags = {}
+        totalWordsInDoc = 0
 
-    print("\nURL NUMBER: " + str(urlNum) + " = " + newUrl)
+        ############
+        ############ used in function : getPatentAndCalcTF and function : calcDFAndTFIDF
+        global urlNum
+        global word
+        global numDocWithVocab
+        global numDocWithVocabAscending
+        global numDocWithVocab2Gram
+        global numDocWithVocab2GramAscending
+        global numDocWithVocab3Gram
+        global numDocWithVocab3GramAscending
+        global numDocWithVocab4Gram
+        global numDocWithVocab4GramAscending
 
-    urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
+        global fullPatentVocabDict
+        global fullPatentVocabDict2Gram
+        global fullPatentVocabDict3Gram
+        global fullPatentVocabDict4Gram
 
-    if (urlText is None):  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
-        continue
-
-    backCitationText = ""
-
-    for cit in backCitation:
-        backCitationTextEmpty = True
-        if backCitationText == "":
-            backCitationText = cit
-            backCitationTextEmpty = False
-            # if backCitationTextEmpty is True and backCitationText != "":
-            #   backCitationText = " | ".join([backCitationText, cit])
-
-    ### END OF URL EXTRACTION FROM CSV FILE AND WRITING BACKWARD CITATION AND PUB YEAR IN SAME CSV FILE
-
-    ##################################################################################
-    ### START FINDING KEY WORDS
-    ##################################################################################
-    doc = nlp(urlText.decode('utf-8'))
-
-    # DELETING STOP WORDS FROM TEXT FOR
-    document = [words for words in doc if words.is_stop == False]
-    stopWordLessDoc = ""
-    for word in document:
-        stopWordLessDoc = stopWordLessDoc + word.text + " "
-    document = stopWordLessDoc
-
-    ##################################################################################
-    #                    NGRAMS CALCULATING
-    ##################################################################################
+        global nlp
+        global nlp1
+        ############
 
 
-    try:
-        ngramDoc = textacy.Doc(document)
 
 
-    except urllib.error.HTTPError as e:
-        print("RUNTIME ERROR AT THIS PATENT")
-        errorPatents.append(urlNum)
-        continue
-    # ngramDoc = [words for words in ngramDoc if words.is_stop == False]
+        newUrl = ''.join(['https://patents.google.com/patent/', url[0], '/en'])
+
+        print("\nURL NUMBER: " + str(urlNum) + " = " + newUrl)
+
+        urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
+
+        if (urlText is None):  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
+            continue
+
+        backCitationText = ""
+
+        for cit in backCitation:
+            backCitationTextEmpty = True
+            if backCitationText == "":
+                backCitationText = cit
+                backCitationTextEmpty = False
+                # if backCitationTextEmpty is True and backCitationText != "":
+                #   backCitationText = " | ".join([backCitationText, cit])
+
+        ### END OF URL EXTRACTION FROM CSV FILE AND WRITING BACKWARD CITATION AND PUB YEAR IN SAME CSV FILE
+
+        ##################################################################################
+        ### START FINDING KEY WORDS
+        ##################################################################################
+        doc = nlp(urlText.decode('utf-8'))
+
+        # DELETING STOP WORDS FROM TEXT FOR
+        document = [words for words in doc if words.is_stop == False]
+        stopWordLessDoc = ""
+        for word in document:
+            stopWordLessDoc = stopWordLessDoc + word.text + " "
+        document = stopWordLessDoc
+
+        ##################################################################################
+        #                    NGRAMS CALCULATING
+        ##################################################################################
 
 
-    # print("---Printing NGRAMS---")
-    twoGrams = ngramDoc.to_bag_of_terms(ngrams=2, normalize='lemma', as_strings=True)
-    threeGrams = ngramDoc.to_bag_of_terms(ngrams=3, normalize='lemma', as_strings=True)
-    fourGrams = ngramDoc.to_bag_of_terms(ngrams=4, normalize='lemma', as_strings=True)
+        try:
+            ngramDoc = textacy.Doc(document)
 
-    twoGramsSorted = sorted(twoGrams.items(), key=lambda x: x[1], reverse=True)
-    threeGramsSorted = sorted(threeGrams.items(), key=lambda x: x[1], reverse=True)
-    fourGramsSorted = sorted(fourGrams.items(), key=lambda x: x[1], reverse=True)
 
-    # print(twoGramsSorted)
-    # print(threeGramsSorted)
-    # print(fourGramsSorted)
+        except urllib.error.HTTPError as e:
+            print("RUNTIME ERROR AT THIS PATENT")
+            errorPatents.append(urlNum)
+            continue
+        # ngramDoc = [words for words in ngramDoc if words.is_stop == False]
 
-    ###########################################################
-    #                2GRAM COUNTER
-    ###########################################################
-    twoGramsSortedText = []
-    twoGramsSortedText1 = []
 
-    # CALCULATING TF = FREQ/TOTAL WORDS
-    i = 0
-    for word in twoGramsSorted:
-        word = list(word)
-        # print("---word[1]: " + str(word[1]))
-        word[1] = float(word[1] / len(twoGramsSorted))
-        # print("=== NEW word[1]: " + str(word[1]))
-        word = tuple(word)
-        twoGramsSorted[i] = word
-        i += 1
+        # print("---Printing NGRAMS---")
+        twoGrams = ngramDoc.to_bag_of_terms(ngrams=2, normalize='lemma', as_strings=True)
+        threeGrams = ngramDoc.to_bag_of_terms(ngrams=3, normalize='lemma', as_strings=True)
+        fourGrams = ngramDoc.to_bag_of_terms(ngrams=4, normalize='lemma', as_strings=True)
 
-    for word in twoGramsSorted:
-        # twoGramsSortedText = []
-        twoGramsSortedText = " : ".join([(word[0]), str(word[1])])
-        twoGramsSortedText1.append(twoGramsSortedText)
+        twoGramsSorted = sorted(twoGrams.items(), key=lambda x: x[1], reverse=True)
+        threeGramsSorted = sorted(threeGrams.items(), key=lambda x: x[1], reverse=True)
+        fourGramsSorted = sorted(fourGrams.items(), key=lambda x: x[1], reverse=True)
 
-    fullPatentVocabDict2Gram[urlNum] = twoGramsSorted
-    twoGramsSortedText1 = str(twoGramsSortedText1)
-    writer2gram.writerow(twoGramsSortedText1.split(","))
+        # print(twoGramsSorted)
+        # print(threeGramsSorted)
+        # print(fourGramsSorted)
 
-    # CALCULATING DF OF 2GRAM TERMS
-    for vocabInDoc in twoGramsSorted:
-        numDocWithVocab2Gram[vocabInDoc[0]] = numDocWithVocab2Gram.get(vocabInDoc[0], 0) + 1
-    numDocWithVocab2Gram_items = numDocWithVocab2Gram.items()
-    numDocWithVocab2GramAscending = sorted(numDocWithVocab2Gram_items, key=lambda x: x[1] * -1)
+        ###########################################################
+        #                2GRAM COUNTER
+        ###########################################################
+        twoGramsSortedText = []
+        twoGramsSortedText1 = []
 
-    ###########################################################
-    #                3GRAM COUNTER
-    ###########################################################
-    threeGramsSortedText = []
-    threeGramsSortedText1 = []
+        # CALCULATING TF = FREQ/TOTAL WORDS
+        i = 0
+        for word in twoGramsSorted:
+            word = list(word)
+            # print("---word[1]: " + str(word[1]))
+            word[1] = float(word[1] / len(twoGramsSorted))
+            # print("=== NEW word[1]: " + str(word[1]))
+            word = tuple(word)
+            twoGramsSorted[i] = word
+            i += 1
 
-    # CALCULATING TF = FREQ/TOTAL WORDS
-    i = 0
-    for word in threeGramsSorted:
-        word = list(word)
-        # print("---word[1]: " + str(word[1]))
-        word[1] = float(word[1] / len(threeGramsSorted))
-        # print("=== NEW word[1]: " + str(word[1]))
-        word = tuple(word)
-        threeGramsSorted[i] = word
-        i += 1
-    for word in threeGramsSorted:
-        threeGramsSortedText = " : ".join([(word[0]), str(word[1])])
-        threeGramsSortedText1.append(threeGramsSortedText)
+        for word in twoGramsSorted:
+            # twoGramsSortedText = []
+            twoGramsSortedText = " : ".join([(word[0]), str(word[1])])
+            twoGramsSortedText1.append(twoGramsSortedText)
 
-    fullPatentVocabDict3Gram[urlNum] = threeGramsSorted
-    threeGramsSortedText1 = str(threeGramsSortedText1)
-    writer3gram.writerow(threeGramsSortedText1.split(","))
+        fullPatentVocabDict2Gram[urlNum] = twoGramsSorted
+        twoGramsSortedText1 = str(twoGramsSortedText1)
+        writer2gram.writerow(twoGramsSortedText1.split(","))
 
-    # CALCULATING DF OF 3GRAM TERMS
-    for vocabInDoc in threeGramsSorted:
-        numDocWithVocab3Gram[vocabInDoc[0]] = numDocWithVocab3Gram.get(vocabInDoc[0], 0) + 1
-    numDocWithVocab3Gram_items = numDocWithVocab3Gram.items()
-    numDocWithVocab3GramAscending = sorted(numDocWithVocab3Gram_items, key=lambda x: x[1] * -1)
+        # CALCULATING DF OF 2GRAM TERMS
+        for vocabInDoc in twoGramsSorted:
+            numDocWithVocab2Gram[vocabInDoc[0]] = numDocWithVocab2Gram.get(vocabInDoc[0], 0) + 1
+        numDocWithVocab2Gram_items = numDocWithVocab2Gram.items()
+        numDocWithVocab2GramAscending = sorted(numDocWithVocab2Gram_items, key=lambda x: x[1] * -1)
 
-    ###########################################################
-    #                    4GRAM COUNTER
-    ###########################################################
-    fourGramsSortedText = []
-    fourGramsSortedText1 = []
+        ###########################################################
+        #                3GRAM COUNTER
+        ###########################################################
+        threeGramsSortedText = []
+        threeGramsSortedText1 = []
 
-    # CALCULATING TF = FREQ/TOTAL WORDS
-    i = 0
-    for word in fourGramsSorted:
-        word = list(word)
-        # print("---word[1]: " + str(word[1]))
-        word[1] = float(word[1] / len(fourGramsSorted))
-        # print("=== NEW word[1]: " + str(word[1]))
-        word = tuple(word)
-        fourGramsSorted[i] = word
-        i += 1
-    for word in fourGramsSorted:
-        fourGramsSortedText = " : ".join([(word[0]), str(word[1])])
-        fourGramsSortedText1.append(fourGramsSortedText)
+        # CALCULATING TF = FREQ/TOTAL WORDS
+        i = 0
+        for word in threeGramsSorted:
+            word = list(word)
+            # print("---word[1]: " + str(word[1]))
+            word[1] = float(word[1] / len(threeGramsSorted))
+            # print("=== NEW word[1]: " + str(word[1]))
+            word = tuple(word)
+            threeGramsSorted[i] = word
+            i += 1
+        for word in threeGramsSorted:
+            threeGramsSortedText = " : ".join([(word[0]), str(word[1])])
+            threeGramsSortedText1.append(threeGramsSortedText)
 
-    fullPatentVocabDict4Gram[urlNum] = fourGramsSorted
-    fourGramsSortedText1 = str(fourGramsSortedText1)
-    writer4gram.writerow(fourGramsSortedText1.split(","))
+        fullPatentVocabDict3Gram[urlNum] = threeGramsSorted
+        threeGramsSortedText1 = str(threeGramsSortedText1)
+        writer3gram.writerow(threeGramsSortedText1.split(","))
 
-    # CALCULATING DF OF 4GRAM TERMS
-    for vocabInDoc in fourGramsSorted:
-        numDocWithVocab4Gram[vocabInDoc[0]] = numDocWithVocab4Gram.get(vocabInDoc[0], 0) + 1
-    numDocWithVocab4Gram_items = numDocWithVocab4Gram.items()
-    numDocWithVocab4GramAscending = sorted(numDocWithVocab4Gram_items, key=lambda x: x[1] * -1)
+        # CALCULATING DF OF 3GRAM TERMS
+        for vocabInDoc in threeGramsSorted:
+            numDocWithVocab3Gram[vocabInDoc[0]] = numDocWithVocab3Gram.get(vocabInDoc[0], 0) + 1
+        numDocWithVocab3Gram_items = numDocWithVocab3Gram.items()
+        numDocWithVocab3GramAscending = sorted(numDocWithVocab3Gram_items, key=lambda x: x[1] * -1)
 
-    '''
-    ###########################################################
-    # 1GRAM WORD LIST with TF / TF-IDF
-    ###########################################################
-    sents = []
-    new_sents = []
-    for sent in doc.sents:
-        sents.append(sent)   
+        ###########################################################
+        #                    4GRAM COUNTER
+        ###########################################################
+        fourGramsSortedText = []
+        fourGramsSortedText1 = []
+
+        # CALCULATING TF = FREQ/TOTAL WORDS
+        i = 0
+        for word in fourGramsSorted:
+            word = list(word)
+            # print("---word[1]: " + str(word[1]))
+            word[1] = float(word[1] / len(fourGramsSorted))
+            # print("=== NEW word[1]: " + str(word[1]))
+            word = tuple(word)
+            fourGramsSorted[i] = word
+            i += 1
+        for word in fourGramsSorted:
+            fourGramsSortedText = " : ".join([(word[0]), str(word[1])])
+            fourGramsSortedText1.append(fourGramsSortedText)
+
+        fullPatentVocabDict4Gram[urlNum] = fourGramsSorted
+        fourGramsSortedText1 = str(fourGramsSortedText1)
+        writer4gram.writerow(fourGramsSortedText1.split(","))
+
+        # CALCULATING DF OF 4GRAM TERMS
+        for vocabInDoc in fourGramsSorted:
+            numDocWithVocab4Gram[vocabInDoc[0]] = numDocWithVocab4Gram.get(vocabInDoc[0], 0) + 1
+        numDocWithVocab4Gram_items = numDocWithVocab4Gram.items()
+        numDocWithVocab4GramAscending = sorted(numDocWithVocab4Gram_items, key=lambda x: x[1] * -1)
+
+        '''
+        ###########################################################
+        # 1GRAM WORD LIST with TF / TF-IDF
+        ###########################################################
+        sents = []
+        new_sents = []
+        for sent in doc.sents:
+            sents.append(sent)   
+        
+        i=0
+        clean_token_tags_sents = []
+        for sent in sents:
+            i += 1
+            #print("Processing sentence# %d: %s" % (i, sent))
+            token_tags = []
+            toks = nlp(sent.text.encode("ascii", "ignore").decode("utf-8"))
+            for tok in toks:
+                token_tags.append((tok.lemma_, tok.pos_, tok.dep_))
+            
+            clean_token_tags = []
+            
+            #COUNTING WORDS: TF
+            for tt in token_tags:
+                if tt[1] == u"SPACE":
+                    continue
+                clean_token_tags.append(tt)
+                clean_token_tags_sents.append(tt)
+                if (nlp.vocab[tt[0]].is_stop == False) and (tt[1] != u'PUNCT') and (tt[1] != u'NUM'):
+                    totalWordsInDoc +=1
+                    textVocabs[tt[0]] = textVocabs.get(tt[0], 0) + 1
+                    textVocabsTags[tt[1]] = textVocabsTags.get(tt[1], 0) + 1
+                    #LIST OF ALL VOCAB IN ALL TEXT
+                    #textVocabsALL[tt[0]] = textVocabsALL.get(tt[0], 0) + 1
+                    #textVocabsTagsALL[tt[1]] = textVocabsTagsALL.get(tt[1], 0) + 1
     
+        
+        masterInputText = ";".join([url[0], str(clean_token_tags_sents)])
+        masterwriter.writerow(masterInputText.split(";"))
+        
+        textVocabs_items = textVocabs.items()
+        textVocabs_items = list(textVocabs_items)
+        
+        # CALCULATING TF = FREQ/TOTAL WORDS 1GRAM
+        x=0
+        for items in textVocabs_items:
+            items = list(items)
+            items[1] = float(items[1] / totalWordsInDoc)
+            items = tuple(items)
+            textVocabs_items[x] = items
+            x+=1
+        textVocabsAscending = sorted(textVocabs_items, key= lambda x: x[1]*-1)   
+        
+        fullPatentVocabDict[urlNum] = textVocabsAscending
+        
+        #NUMBER OF DOCUMENTS WITH EACH VOCAB
+        for vocabInDoc in textVocabsAscending:
+            if(nlp.vocab[vocabInDoc[0]].is_stop == False) and vocabInDoc[1] != u'PUNCT':
+                numDocWithVocab[vocabInDoc[0]] = numDocWithVocab.get(vocabInDoc[0], 0) + 1
+        numDocWithVocab_items = numDocWithVocab.items()
+        numDocWithVocabAscending = sorted(numDocWithVocab_items, key= lambda x: x[1]*-1)
+    
+        #print(numDocWithVocabAscending)
+        
+        for vocab in textVocabsAscending:   #JOINING VOCAB WITH FREQUENCY 'VOCAB: FREQ'
+            textVocabsAscendingItem = ":".join([str(vocab[0]), str(vocab[1])]) #/ len(textVocabsAscending)
+            textVocabsAscending1.append(textVocabsAscendingItem)
+    
+        
+        #for vocab in textVocabsAscending1:
+        textVocabsAscending2 = " | ".join(textVocabsAscending1)
+        csvInputText = ",".join([url[0], backCitationText, pubDate, str(textVocabsAscending2)])
+        csvInput.append(csvInputText)
+        writer.writerow(csvInputText.split(","))
+        urlFixed.append(newUrl)                
+    
+    # CALCULATING TF-IDF 1GRAM
+    print("-----Calculating TF-IDF----- 1GRAM")
     i=0
-    clean_token_tags_sents = []
-    for sent in sents:
-        i += 1
-        #print("Processing sentence# %d: %s" % (i, sent))
-        token_tags = []
-        toks = nlp(sent.text.encode("ascii", "ignore").decode("utf-8"))
-        for tok in toks:
-            token_tags.append((tok.lemma_, tok.pos_, tok.dep_))
+    for patNum in fullPatentVocabDict:
+        i+=1
         
-        clean_token_tags = []
-        
-        #COUNTING WORDS: TF
-        for tt in token_tags:
-            if tt[1] == u"SPACE":
-                continue
-            clean_token_tags.append(tt)
-            clean_token_tags_sents.append(tt)
-            if (nlp.vocab[tt[0]].is_stop == False) and (tt[1] != u'PUNCT') and (tt[1] != u'NUM'):
-                totalWordsInDoc +=1
-                textVocabs[tt[0]] = textVocabs.get(tt[0], 0) + 1
-                textVocabsTags[tt[1]] = textVocabsTags.get(tt[1], 0) + 1
-                #LIST OF ALL VOCAB IN ALL TEXT
-                #textVocabsALL[tt[0]] = textVocabsALL.get(tt[0], 0) + 1
-                #textVocabsTagsALL[tt[1]] = textVocabsTagsALL.get(tt[1], 0) + 1
-
+        j=0
+        for word in fullPatentVocabDict[i]:
+            
+            word = list(word)
+            word1 = word
+            
+            tf = word[1]  
+            wordIdf = JjreeTFIDF.idf(urlNum, word[0], numDocWithVocabAscending) 
+            TF_IDF = float(tf * wordIdf)
+            
+            word.append(TF_IDF)
+            word = tuple(word)
+            
+            word1[1] = TF_IDF
+            word1 = tuple(word1)
+            
+            fullPatentVocabDict[i][j] = word1
+            j+=1
     
-    masterInputText = ";".join([url[0], str(clean_token_tags_sents)])
-    masterwriter.writerow(masterInputText.split(";"))
+    # SORTING 1 GRAM WORDS
+    i=1
+    sortedFullPatentVocabDict = fullPatentVocabDict
+    for patent in sortedFullPatentVocabDict:
+        sortedFullPatentVocabDict[i] = sorted(sortedFullPatentVocabDict[i], key = itemgetter(1), reverse = True)
+        i+=1
     
-    textVocabs_items = textVocabs.items()
-    textVocabs_items = list(textVocabs_items)
     
-    # CALCULATING TF = FREQ/TOTAL WORDS 1GRAM
-    x=0
-    for items in textVocabs_items:
-        items = list(items)
-        items[1] = float(items[1] / totalWordsInDoc)
-        items = tuple(items)
-        textVocabs_items[x] = items
-        x+=1
-    textVocabsAscending = sorted(textVocabs_items, key= lambda x: x[1]*-1)   
-    
-    fullPatentVocabDict[urlNum] = textVocabsAscending
-    
-    #NUMBER OF DOCUMENTS WITH EACH VOCAB
-    for vocabInDoc in textVocabsAscending:
-        if(nlp.vocab[vocabInDoc[0]].is_stop == False) and vocabInDoc[1] != u'PUNCT':
-            numDocWithVocab[vocabInDoc[0]] = numDocWithVocab.get(vocabInDoc[0], 0) + 1
-    numDocWithVocab_items = numDocWithVocab.items()
-    numDocWithVocabAscending = sorted(numDocWithVocab_items, key= lambda x: x[1]*-1)
-
-    #print(numDocWithVocabAscending)
-    
-    for vocab in textVocabsAscending:   #JOINING VOCAB WITH FREQUENCY 'VOCAB: FREQ'
-        textVocabsAscendingItem = ":".join([str(vocab[0]), str(vocab[1])]) #/ len(textVocabsAscending)
-        textVocabsAscending1.append(textVocabsAscendingItem)
-
-    
-    #for vocab in textVocabsAscending1:
-    textVocabsAscending2 = " | ".join(textVocabsAscending1)
-    csvInputText = ",".join([url[0], backCitationText, pubDate, str(textVocabsAscending2)])
-    csvInput.append(csvInputText)
-    writer.writerow(csvInputText.split(","))
-    urlFixed.append(newUrl)                
-
-# CALCULATING TF-IDF 1GRAM
-print("-----Calculating TF-IDF----- 1GRAM")
-i=0
-for patNum in fullPatentVocabDict:
-    i+=1
-    
-    j=0
-    for word in fullPatentVocabDict[i]:
-        
-        word = list(word)
-        word1 = word
-        
-        tf = word[1]  
-        wordIdf = JjreeTFIDF.idf(urlNum, word[0], numDocWithVocabAscending) 
-        TF_IDF = float(tf * wordIdf)
-        
-        word.append(TF_IDF)
-        word = tuple(word)
-        
-        word1[1] = TF_IDF
-        word1 = tuple(word1)
-        
-        fullPatentVocabDict[i][j] = word1
-        j+=1
-
-# SORTING 1 GRAM WORDS
-i=1
-sortedFullPatentVocabDict = fullPatentVocabDict
-for patent in sortedFullPatentVocabDict:
-    sortedFullPatentVocabDict[i] = sorted(sortedFullPatentVocabDict[i], key = itemgetter(1), reverse = True)
-    i+=1
-
-
-# CHANGING 1GRAM TO WORD:TF-IDF FORMAT THEN SAVING TO FILE
-k=1
-for patent in sortedFullPatentVocabDict: 
-    j=0
-    for word in sortedFullPatentVocabDict[k]:
-        sortedFullPatentVocabDict[k][j] = " : ".join([str(sortedFullPatentVocabDict[k][j][0]), str(sortedFullPatentVocabDict[k][j][1]) ]) #, str(sortedFullPatentVocabDict[k][j][2])])
-        j+=1
-    k+=1
-p=1    
-for patent in sortedFullPatentVocabDict:
-    tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict[p])])
-    writer2.writerow(tfidfText.split(","))
-    p+=1
-'''
-    urlNum += 1
-
-print(errorPatents)
+    # CHANGING 1GRAM TO WORD:TF-IDF FORMAT THEN SAVING TO FILE
+    k=1
+    for patent in sortedFullPatentVocabDict: 
+        j=0
+        for word in sortedFullPatentVocabDict[k]:
+            sortedFullPatentVocabDict[k][j] = " : ".join([str(sortedFullPatentVocabDict[k][j][0]), str(sortedFullPatentVocabDict[k][j][1]) ]) #, str(sortedFullPatentVocabDict[k][j][2])])
+            j+=1
+        k+=1
+    p=1    
+    for patent in sortedFullPatentVocabDict:
+        tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict[p])])
+        writer2.writerow(tfidfText.split(","))
+        p+=1
+    '''
+        urlNum += 1
 
 
 
-
-
-
-
-
+timeFuncStart=time.time()
+getPatentAndCalcTF(1,1)
+timeFuncEnd=time.time()
+print("It has been {0} seconds for the get Patent and calculate TF of N-gram".format(timeFuncEnd-timeFuncStart))
+# print(errorPatents)
 
 ##################################################################################
 # CALCULATING TF-IDF 2GRAM
