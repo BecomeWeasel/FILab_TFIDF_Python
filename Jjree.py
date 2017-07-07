@@ -656,7 +656,8 @@ for patent in sortedFullPatentVocabDict2Gram:
     k += 1
 p = 1
 for patent in sortedFullPatentVocabDict2Gram:
-    tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict2Gram[p])]).encode('utf-8')
+    tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict2Gram[p])])
+    tfidfText.decode() # L:659 encode('utf-8') delete, add decode() to L:660 @11:58
     writer2gramTFIDF.writerow(tfidfText.split(","))
     p += 1
 
