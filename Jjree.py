@@ -10,9 +10,10 @@ from __future__ import print_function
 from alchemyapi import AlchemyAPI
 from pathlib import Path
 import json
+
 import time
 import multiprocessing
-
+from math import floor
 
 import nltk
 from nltk import ngrams
@@ -257,6 +258,15 @@ for patent in HPPListreader:
 # print(HPPList[1][2])
 # print(HPPList[1][1])
 
+
+
+
+###
+tmpmatrix = []
+for url in reader:
+    tmpmatrix.append(url[0])
+# print(tmpmatrix[0], tmpmatrix[1])
+
 '''
 # FINDING DF OF HPP'S WORDS
 for HPP in reader2:
@@ -290,9 +300,49 @@ for key in HPPwordList.keys():
 '''
 
 
-def getPatentAndCalcTF(End, Start):
+# Performance is usually relative to execution speed.
+# Separate code into two block to improve performance.
+# Using multi-processing can improve execution speed.
+# First one of separted part is "Get patent and calculate TF"
+# function named getPatentAndCalcTF
+
+
+
+def getPatentAndCalcTF(start, end):
     # GETTING TEXT FROM GOOGLE PATENT WEBSITES
-    for url in reader:
+
+    ############
+    ############ variable used in function : getPatentAndCalcTF and function : calcDFAndTFIDF
+    global urlNum
+    global word
+    global numDocWithVocab
+    global numDocWithVocabAscending
+    global numDocWithVocab2Gram
+    global numDocWithVocab2GramAscending
+    global numDocWithVocab3Gram
+    global numDocWithVocab3GramAscending
+    global numDocWithVocab4Gram
+    global numDocWithVocab4GramAscending
+
+    global fullPatentVocabDict
+    global fullPatentVocabDict2Gram
+    global fullPatentVocabDict3Gram
+    global fullPatentVocabDict4Gram
+
+    global nlp
+    global nlp1
+
+    ############
+
+
+    starttmp = start
+    urlNum = start + 1
+    # for url in reader:
+
+    for head in range(start, end + 1):
+        if (urlNum == end):
+            urlNum -= 1
+            return None
         textVocabs = {}
         textVocabs_items = {}
         textVocabsAscending = {}
@@ -301,32 +351,10 @@ def getPatentAndCalcTF(End, Start):
         textVocabsTags = {}
         totalWordsInDoc = 0
 
-        ############
-        ############ used in function : getPatentAndCalcTF and function : calcDFAndTFIDF
-        global urlNum
-        global word
-        global numDocWithVocab
-        global numDocWithVocabAscending
-        global numDocWithVocab2Gram
-        global numDocWithVocab2GramAscending
-        global numDocWithVocab3Gram
-        global numDocWithVocab3GramAscending
-        global numDocWithVocab4Gram
-        global numDocWithVocab4GramAscending
-
-        global fullPatentVocabDict
-        global fullPatentVocabDict2Gram
-        global fullPatentVocabDict3Gram
-        global fullPatentVocabDict4Gram
-
-        global nlp
-        global nlp1
-        ############
+        # newUrl = ''.join(['https://patents.google.com/patent/', url[0], '/en'])
 
 
-
-
-        newUrl = ''.join(['https://patents.google.com/patent/', url[0], '/en'])
+        newUrl = ''.join(['https://patents.google.com/patent/', tmpmatrix[head], '/en'])
 
         print("\nURL NUMBER: " + str(urlNum) + " = " + newUrl)
 
@@ -480,6 +508,9 @@ def getPatentAndCalcTF(End, Start):
         numDocWithVocab4Gram_items = numDocWithVocab4Gram.items()
         numDocWithVocab4GramAscending = sorted(numDocWithVocab4Gram_items, key=lambda x: x[1] * -1)
 
+        urlNum += 1
+        starttmp += 1
+
         '''
         ###########################################################
         # 1GRAM WORD LIST with TF / TF-IDF
@@ -602,14 +633,18 @@ def getPatentAndCalcTF(End, Start):
         writer2.writerow(tfidfText.split(","))
         p+=1
     '''
-        urlNum += 1
 
 
+# timeFuncStart = time.time()
+# getPatentAndCalcTF(0, floor(49 / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
+# timeFuncEnd = time.time()
+# print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
 
-timeFuncStart=time.time()
-getPatentAndCalcTF(1,1)
-timeFuncEnd=time.time()
-print("It has been {0} seconds for the get Patent and calculate TF of N-gram".format(timeFuncEnd-timeFuncStart))
+timeFuncStart = time.time()
+getPatentAndCalcTF(floor(49 / 2), 49 + 1)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
+timeFuncEnd = time.time()
+print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
+
 # print(errorPatents)
 
 ##################################################################################
