@@ -1,5 +1,5 @@
 '''
-Created on 2004. 3. 11.
+Created on 1989. 3. 11.
 
 @author: jjree
 '''
@@ -149,21 +149,21 @@ savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extract
 '''
 
 # DSSC PATENT SET FROM PATSNAP DIVIDED BY YEAR
-yearOfPatents = 2004
+yearOfPatents = 1989
 
-csvfile = open('(03)DSSC_9501 PatSnap v.02 2004 Patent for yearly keyword extraction.csv', 'r+')
+csvfile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extraction.csv', 'r+')
 csvfile_DFCalc = open('(03)DSSC_9501 PatSnap v.045 MAIN PATH PATENTS LIST FOR DF CALC.csv', 'r+')
 
-savefile = open('(03)DSSC_9501 PatSnap v.02 2004 Patent for yearly keyword extraction OUTPUT.csv', 'w')
+savefile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extraction OUTPUT.csv', 'w')
 
-savefile2 = open('TF-IDF OUTPUT (2004).csv', 'w')
+savefile2 = open('TF-IDF OUTPUT (1989).csv', 'w')
 
-savefile_2gram = open('2GRAM OUTPUT (2004).csv', 'w')
-savefile_3gram = open('3GRAM OUTPUT (2004).csv', 'w')
-savefile_4gram = open('4GRAM OUTPUT (2004).csv', 'w')
-savefile_2gram_TFIDF = open('2GRAM OUTPUT TFIDF (2004).csv', 'w')
-savefile_3gram_TFIDF = open('3GRAM OUTPUT TFIDF (2004).csv', 'w')
-savefile_4gram_TFIDF = open('4GRAM OUTPUT TFIDF (2004).csv', 'w')
+savefile_2gram = open('2GRAM OUTPUT (1989).csv', 'w')
+savefile_3gram = open('3GRAM OUTPUT (1989).csv', 'w')
+savefile_4gram = open('4GRAM OUTPUT (1989).csv', 'w')
+savefile_2gram_TFIDF = open('2GRAM OUTPUT TFIDF (1989).csv', 'w')
+savefile_3gram_TFIDF = open('3GRAM OUTPUT TFIDF (1989).csv', 'w')
+savefile_4gram_TFIDF = open('4GRAM OUTPUT TFIDF (1989).csv', 'w')
 
 savefile_DFList = open('DF LIST OUTPUT 1GRAM.csv', 'w')
 savefile_DFList_2GRAM = open('DF LIST OUTPUT 2GRAM.csv', 'w')
@@ -588,6 +588,15 @@ for patent in sortedFullPatentVocabDict:
     urlNum += 1
 
 print(errorPatents)
+
+
+
+
+
+
+
+
+
 ##################################################################################
 # CALCULATING TF-IDF 2GRAM
 ##################################################################################
@@ -837,12 +846,12 @@ HPPListFile.close()
 
 '''
 print("Starting readWEBSITE")
-demo_text1 = readWEBSITE.getText('https://patents.google.com/patent/US20040093923A1/en')
+demo_text1 = readWEBSITE.getText('https://patents.google.com/patent/US19890093923A1/en')
 
 #Extracting text from HTML
 demo_text2 = readHTML2.getText('US7071258 - Graphene.html')
 #demo_text2 = readHTML2.getText('US8871296B2 - Graphene 2.html')
-#demo_text2 = readHTML1.getText('US20040079932 - Graphene 3.html')
+#demo_text2 = readHTML1.getText('US19890079932 - Graphene 3.html')
 
 
 #NLTK PUNKT Sentence Tokenizer
