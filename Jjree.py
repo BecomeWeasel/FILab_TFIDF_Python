@@ -141,8 +141,8 @@ savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extract
 
 # DSSC PATENT SET FROM PATSNAP DIVIDED BY YEAR
 yearOfPatents = 1989
-error1stCount=0 #HTTP404 ERROR COUNT from 1st call
-error2ndCount=0 #HTTP404 ERROR COUNT from 2nd call
+error1stCount = 0  # HTTP404 ERROR COUNT from 1st call
+error2ndCount = 0  # HTTP404 ERROR COUNT from 2nd call
 
 csvfile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extraction.csv', 'r+')
 csvfile_DFCalc = open('(03)DSSC_9501 PatSnap v.045 MAIN PATH PATENTS LIST FOR DF CALC.csv', 'r+')
@@ -310,7 +310,8 @@ for key in HPPwordList.keys():
 
 
 
-def getPatentAndCalcTF(start, end):  # TODO: if end==0, result write on 2GRAM OUTPUT("YEAR").csv else result write on 2GRAM OUTPUT("YEAR").csv
+def getPatentAndCalcTF(start,
+                       end):  # TODO: if end==0, result write on 2GRAM OUTPUT("YEAR").csv else result write on 2GRAM OUTPUT("YEAR").csv
     # GETTING TEXT FROM GOOGLE PATENT WEBSITES
 
     ############
@@ -364,11 +365,11 @@ def getPatentAndCalcTF(start, end):  # TODO: if end==0, result write on 2GRAM OU
 
         urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
 
-        if urlText is None:  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
-            if start ==0: # start 0 means function is called for 1st time and executed on P1. else P2 call function.
-                error1stCount+=1 # error from 1st func call
+        if urlText is None:  # TODO : FIXED @7.6 22:31 modification on 'urlText = None' to 'urlText is None'
+            if start == 0:  # start 0 means function is called for 1st time and executed on P1. else P2 call function.
+                error1stCount += 1  # error from 1st func call
             else:
-                error2ndCount+=1 # error from 2nd func call
+                error2ndCount += 1  # error from 2nd func call
 
             continue  # HTTP404 Error check
 
@@ -650,14 +651,14 @@ getPatentAndCalcTF(0, floor(49 / 2) - 1)  # call getPatentAndCalcTF and execute 
 timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
 
-savefile_2gram.close() # TODO : 🚨🚨fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
-savefile_3gram.close() # identifying of problem cause is not yet done. @ 7.9 03:00
-savefile_4gram.close()
+timeFuncStart = time.time()
+getPatentAndCalcTF(floor(49 / 2), 49 - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
+timeFuncEnd = time.time()
 
-# timeFuncStart = time.time()
-# getPatentAndCalcTF(floor(49 / 2), 49 - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
-# timeFuncEnd = time.time()
-# print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
+savefile_2gram.close()  # TODO : FIXED @7.7 05:29 fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
+savefile_3gram.close()  # identifying of problem cause is not yet done. @ 7.9 03:00
+savefile_4gram.close()
+print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
 
 # print(errorPatents)
 
@@ -689,14 +690,16 @@ for patNum in fullPatentVocabDict2Gram:
                 tf = word[1]
 
                 # wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab2GramAscending)
-                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents)%1989]-error1stCount-error2ndCount, word[0], numDocWithVocab2GramAscending)
+                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents) % 1989] - error1stCount - error2ndCount,
+                                              word[0], numDocWithVocab2GramAscending)
                 # first paramter of idf func (PatCOUNT~) means valid number of patent
                 TF_IDF = float(tf * wordIdf)
                 # print("2 gram word: " + str(word) + "  tf: " + str(tf) + " urlNum: " + str(urlNum) + " wordIDF: " + str(wordIdf) + " TFIDF: " + str(TF_IDF))
 
                 word.append(TF_IDF)
                 word = tuple(word)
-                word1[1] = TF_IDF
+                word1[1] = TF_IDF  # TODO: TF/IDF calculation works well. maybe save problem. overwrite on word1[1]
+                # don't need to word1[1]=TF_IDF cause already word1[2]==TF_IDF is true . don't know why.
                 word1 = tuple(word1)
                 fullPatentVocabDict2Gram[i][j] = word1
                 j += 1
@@ -711,10 +714,11 @@ print("-----SORTING TF-IDF----- 2GRAM")
 i = 1
 sortedFullPatentVocabDict2Gram = fullPatentVocabDict2Gram
 for patent in sortedFullPatentVocabDict2Gram:
-    try:
+    try:  # TODO: FIXED @7.9 05:41 error handler problem. if we use try, csv file will be empty ,else TFIDF file is equal to TF file.
         sortedFullPatentVocabDict2Gram[i] = sorted(sortedFullPatentVocabDict2Gram[i], key=itemgetter(1), reverse=True)
         i += 1
     except:
+        print("exception")
         i += 1
         continue
 timeNow = time.time()
@@ -728,18 +732,26 @@ k = 1  # TODO : k should change into start point temporary change value into 25
 # k = 25
 for patent in sortedFullPatentVocabDict2Gram:
     j = 0
-    for word in sortedFullPatentVocabDict2Gram[k]:
-        sortedFullPatentVocabDict2Gram[k][j] = " : ".join(
-            [sortedFullPatentVocabDict2Gram[k][j][0], str(sortedFullPatentVocabDict2Gram[k][j][1])]).encode('utf-8')
-        j += 1
+    try:
+        for word in sortedFullPatentVocabDict2Gram[k]:
+            sortedFullPatentVocabDict2Gram[k][j] = " : ".join(
+                [sortedFullPatentVocabDict2Gram[k][j][0], str(sortedFullPatentVocabDict2Gram[k][j][1])]).encode('utf-8')
+            j += 1
+    except:
+        continue
     k += 1
 p = 1
 for patent in sortedFullPatentVocabDict2Gram:
-    tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict2Gram[p])])
-    # L:659 'encode('utf-8')' delete @7.7 16:07
-    writer2gramTFIDF.writerow(
-        tfidfText.split(","))  # save sequence happen here. # TODO : this line ,may, need two version.
-    p += 1
+    try:
+        tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict2Gram[p])])
+        # TODO: FIXED @7.7 16:07 L:659 'encode('utf-8')' delete
+        writer2gramTFIDF.writerow(tfidfText.split(","))  # save sequence happen here.
+        #  TODO : this line ,may, need two version.
+        p += 1
+    except:
+        print("exception at save TFIDF of 2gram")
+        p += 1
+        continue
 
 timeNow = time.time()
 print("It has been {0} seconds for the 2Gram SAVING to END".format(timeNow - timeStart))
@@ -766,7 +778,8 @@ for patNum in fullPatentVocabDict3Gram:
                 word1 = word
                 tf = word[1]
                 # wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab3GramAscending)
-                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents)%1989]-error1stCount-error2ndCount, word[0], numDocWithVocab3GramAscending)
+                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents) % 1989] - error1stCount - error2ndCount,
+                                              word[0], numDocWithVocab3GramAscending)
                 # first paramter of idf func (PatCOUNT~) means valid number of patent
                 TF_IDF = float(tf * wordIdf)
                 word.append(TF_IDF)
@@ -843,7 +856,8 @@ for patNum in fullPatentVocabDict4Gram:
                 word1 = word
                 tf = word[1]
                 # wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab4GramAscending)
-                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents)%1989]-error1stCount-error2ndCount, word[0], numDocWithVocab4GramAscending)
+                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents) % 1989] - error1stCount - error2ndCount,
+                                              word[0], numDocWithVocab4GramAscending)
                 # first paramter of idf func (PatCOUNT~) means valid number of patent
                 TF_IDF = float(tf * wordIdf)
                 word.append(TF_IDF)
