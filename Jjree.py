@@ -141,6 +141,8 @@ savefile = open('(02)Photolithography_6619 PatSnap ORIGINAL2 for keyword extract
 
 # DSSC PATENT SET FROM PATSNAP DIVIDED BY YEAR
 yearOfPatents = 1989
+error1stCount=0 #HTTP404 ERROR COUNT from 1st call
+error2ndCount=0 #HTTP404 ERROR COUNT from 2nd call
 
 csvfile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extraction.csv', 'r+')
 csvfile_DFCalc = open('(03)DSSC_9501 PatSnap v.045 MAIN PATH PATENTS LIST FOR DF CALC.csv', 'r+')
@@ -308,7 +310,7 @@ for key in HPPwordList.keys():
 
 
 
-def getPatentAndCalcTF(start, end):
+def getPatentAndCalcTF(start, end):  # TODO: if end==0, result write on 2GRAM OUTPUT("YEAR").csv else result write on 2GRAM OUTPUT("YEAR").csv
     # GETTING TEXT FROM GOOGLE PATENT WEBSITES
 
     ############
@@ -332,6 +334,8 @@ def getPatentAndCalcTF(start, end):
     global nlp
     global nlp1
 
+    global error1stCount
+    global error2ndCount
     ############
 
 
@@ -361,6 +365,11 @@ def getPatentAndCalcTF(start, end):
         urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
 
         if urlText is None:  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
+            if start ==0: # start 0 means function is called for 1st time and executed on P1. else P2 call function.
+                error1stCount+=1 # error from 1st func call
+            else:
+                error2ndCount+=1 # error from 2nd func call
+
             continue  # HTTP404 Error check
 
         backCitationText = ""
@@ -440,7 +449,8 @@ def getPatentAndCalcTF(start, end):
 
         fullPatentVocabDict2Gram[urlNum] = twoGramsSorted
         twoGramsSortedText1 = str(twoGramsSortedText1)
-        writer2gram.writerow(twoGramsSortedText1.split(","))
+        writer2gram.writerow(
+            twoGramsSortedText1.split(","))  # save sequence happen here. # TODO : this line ,may, need two version.
 
         # CALCULATING DF OF 2GRAM TERMS
         for vocabInDoc in twoGramsSorted:
@@ -640,10 +650,14 @@ getPatentAndCalcTF(0, floor(49 / 2) - 1)  # call getPatentAndCalcTF and execute 
 timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
 
-timeFuncStart = time.time()
-getPatentAndCalcTF(floor(49 / 2), 49 - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
-timeFuncEnd = time.time()
-print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
+savefile_2gram.close() # TODO : 🚨🚨fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
+savefile_3gram.close() # identifying of problem cause is not yet done. @ 7.9 03:00
+savefile_4gram.close()
+
+# timeFuncStart = time.time()
+# getPatentAndCalcTF(floor(49 / 2), 49 - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
+# timeFuncEnd = time.time()
+# print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
 
 # print(errorPatents)
 
@@ -674,7 +688,9 @@ for patNum in fullPatentVocabDict2Gram:
                 word1 = word
                 tf = word[1]
 
-                wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab2GramAscending)
+                # wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab2GramAscending)
+                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents)%1989]-error1stCount-error2ndCount, word[0], numDocWithVocab2GramAscending)
+                # first paramter of idf func (PatCOUNT~) means valid number of patent
                 TF_IDF = float(tf * wordIdf)
                 # print("2 gram word: " + str(word) + "  tf: " + str(tf) + " urlNum: " + str(urlNum) + " wordIDF: " + str(wordIdf) + " TFIDF: " + str(TF_IDF))
 
@@ -721,7 +737,8 @@ p = 1
 for patent in sortedFullPatentVocabDict2Gram:
     tfidfText = ",".join([str(patent), str(sortedFullPatentVocabDict2Gram[p])])
     # L:659 'encode('utf-8')' delete @7.7 16:07
-    writer2gramTFIDF.writerow(tfidfText.split(","))
+    writer2gramTFIDF.writerow(
+        tfidfText.split(","))  # save sequence happen here. # TODO : this line ,may, need two version.
     p += 1
 
 timeNow = time.time()
@@ -748,7 +765,9 @@ for patNum in fullPatentVocabDict3Gram:
                 word = list(word)
                 word1 = word
                 tf = word[1]
-                wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab3GramAscending)
+                # wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab3GramAscending)
+                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents)%1989]-error1stCount-error2ndCount, word[0], numDocWithVocab3GramAscending)
+                # first paramter of idf func (PatCOUNT~) means valid number of patent
                 TF_IDF = float(tf * wordIdf)
                 word.append(TF_IDF)
                 word = tuple(word)
@@ -823,7 +842,9 @@ for patNum in fullPatentVocabDict4Gram:
                 word = list(word)
                 word1 = word
                 tf = word[1]
-                wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab4GramAscending)
+                # wordIdf = JjreeTFIDFNgram.idf(urlNum, word[0], numDocWithVocab4GramAscending)
+                wordIdf = JjreeTFIDFNgram.idf(PatCOUNT[int(yearOfPatents)%1989]-error1stCount-error2ndCount, word[0], numDocWithVocab4GramAscending)
+                # first paramter of idf func (PatCOUNT~) means valid number of patent
                 TF_IDF = float(tf * wordIdf)
                 word.append(TF_IDF)
                 word = tuple(word)
@@ -881,9 +902,9 @@ csvfile_DFCalc.close()
 savefile.close()
 savefile2.close()
 # savefile_FULLTEXT.close()
-savefile_2gram.close()
-savefile_3gram.close()
-savefile_4gram.close()
+# savefile_2gram.close()
+# savefile_3gram.close()
+# savefile_4gram.close()
 savefile_2gram_TFIDF.close()
 savefile_3gram_TFIDF.close()
 savefile_4gram_TFIDF.close()
