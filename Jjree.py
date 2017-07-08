@@ -651,10 +651,11 @@ print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND
 # CALCULATING TF-IDF 2GRAM
 ##################################################################################
 timeStart = time.time()
+# TODO : Need to group func getPatentAndCalcTF and func calcTFIDF
 
 print("-----Calculating TF-IDF----- 2GRAM")
 
-i = 0
+i = 0  # TODO: initial value of i must be changed, and it is connected to first function's parameters.
 # print(fullPatentVocabDict2Gram)
 for patNum in fullPatentVocabDict2Gram:
     i += 1
@@ -706,7 +707,9 @@ print("It has been {0} seconds for the 2Gram SORTING to END".format(timeNow - ti
 timeStart = time.time()
 print("-----SAVING TF-IDF----- 2GRAM")
 # CHANGING 2GRAM TO WORD:TF-IDF FORMAT THEN SAVING TO FILE
-k = 1
+k = 1 # TODO : k should change into start point temporary change value into 25
+
+# k = 25
 for patent in sortedFullPatentVocabDict2Gram:
     j = 0
     for word in sortedFullPatentVocabDict2Gram[k]:
