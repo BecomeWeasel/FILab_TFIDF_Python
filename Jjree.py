@@ -315,7 +315,7 @@ def getPatentAndCalcTF(start,
     # GETTING TEXT FROM GOOGLE PATENT WEBSITES
 
     ############
-    ############ variable used in function : getPatentAndCalcTF and function : DFAndTFIDF
+    ############ variable used in function : getPatentA ndCalcTF and function : DFAndTFIDF
     global urlNum
     global word
     global numDocWithVocab
