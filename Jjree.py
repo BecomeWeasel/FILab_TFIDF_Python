@@ -312,7 +312,7 @@ def getPatentAndCalcTF(start, end):
     # GETTING TEXT FROM GOOGLE PATENT WEBSITES
 
     ############
-    ############ variable used in function : getPatentAndCalcTF and function : calcDFAndTFIDF
+    ############ variable used in function : getPatentAndCalcTF and function : DFAndTFIDF
     global urlNum
     global word
     global numDocWithVocab
@@ -340,9 +340,9 @@ def getPatentAndCalcTF(start, end):
     # for url in reader:
 
     for head in range(start, end + 1):
-        if (urlNum == end):
-            urlNum -= 1
-            return None
+        # if urlNum == end:
+        # urlNum -= 1
+        # return None
         textVocabs = {}
         textVocabs_items = {}
         textVocabsAscending = {}
@@ -360,8 +360,8 @@ def getPatentAndCalcTF(start, end):
 
         urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
 
-        if (urlText is None):  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
-            continue
+        if urlText is None:  # modification on 'urlText = None' to 'urlText is None' @7.6 22:31
+            continue  # HTTP404 Error check
 
         backCitationText = ""
 
@@ -635,13 +635,13 @@ def getPatentAndCalcTF(start, end):
     '''
 
 
-# timeFuncStart = time.time()
-# getPatentAndCalcTF(0, floor(49 / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
-# timeFuncEnd = time.time()
-# print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
+timeFuncStart = time.time()
+getPatentAndCalcTF(0, floor(49 / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
+timeFuncEnd = time.time()
+print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
 
 timeFuncStart = time.time()
-getPatentAndCalcTF(floor(49 / 2), 49 + 1)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
+getPatentAndCalcTF(floor(49 / 2), 49 - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
 timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
 
@@ -707,7 +707,7 @@ print("It has been {0} seconds for the 2Gram SORTING to END".format(timeNow - ti
 timeStart = time.time()
 print("-----SAVING TF-IDF----- 2GRAM")
 # CHANGING 2GRAM TO WORD:TF-IDF FORMAT THEN SAVING TO FILE
-k = 1 # TODO : k should change into start point temporary change value into 25
+k = 1  # TODO : k should change into start point temporary change value into 25
 
 # k = 25
 for patent in sortedFullPatentVocabDict2Gram:
