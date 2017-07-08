@@ -10,7 +10,7 @@ from __future__ import print_function
 from alchemyapi import AlchemyAPI
 from pathlib import Path
 import json
-
+import os
 import time
 import multiprocessing
 from math import floor
@@ -89,8 +89,6 @@ demo_text1 = demo_text1.replace("the ", "")
 demo_text1 = demo_text1.replace(" a ", "")
 demo_text1 = demo_text1.replace("this ", "")
 '''
-# demo_text2 = readPDF.getPDFContent('US7071258 - Graphene.pdf')
-# demo_text2 = readPDF.getPDFContent('US8871296 - Graphene 2.pdf')
 
 # Extracting text from  WEBSITE
 urlFixed = []
@@ -109,6 +107,12 @@ urls = urlFile.readlines()
 csvfile = open('(01)Graphene_5446.csv', 'r+')
 savefile = open('(01)Graphene_5446_1.csv', 'w')
 '''
+
+# Jjree.py's path for outputs saving
+directory = os.getcwd()
+directory = directory + "/outputs/"
+if not os.path.exists(directory):
+    os.mkdir(directory, 0o755)
 
 ### PHOTOLITHOGRAPHY PATENTS
 # saving all text from website
@@ -151,19 +155,19 @@ savefile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extra
 
 savefile2 = open('TF-IDF OUTPUT (1989).csv', 'w')
 
-savefile_2gram = open('2GRAM OUTPUT (1989).csv', 'w')
-savefile_3gram = open('3GRAM OUTPUT (1989).csv', 'w')
-savefile_4gram = open('4GRAM OUTPUT (1989).csv', 'w')
-savefile_2gram_TFIDF = open('2GRAM OUTPUT TFIDF (1989).csv', 'w')
-savefile_3gram_TFIDF = open('3GRAM OUTPUT TFIDF (1989).csv', 'w')
-savefile_4gram_TFIDF = open('4GRAM OUTPUT TFIDF (1989).csv', 'w')
+savefile_2gram = open(directory + '2GRAM OUTPUT (1989).csv', 'w')
+savefile_3gram = open(directory + '3GRAM OUTPUT (1989).csv', 'w')
+savefile_4gram = open(directory + '4GRAM OUTPUT (1989).csv', 'w')
+savefile_2gram_TFIDF = open(directory + '2GRAM OUTPUT TFIDF (1989).csv', 'w')
+savefile_3gram_TFIDF = open(directory + '3GRAM OUTPUT TFIDF (1989).csv', 'w')
+savefile_4gram_TFIDF = open(directory + '4GRAM OUTPUT TFIDF (1989).csv', 'w')
 
-savefile_DFList = open('DF LIST OUTPUT 1GRAM.csv', 'w')
-savefile_DFList_2GRAM = open('DF LIST OUTPUT 2GRAM.csv', 'w')
-savefile_DFList_3GRAM = open('DF LIST OUTPUT 3GRAM.csv', 'w')
-savefile_DFList_4GRAM = open('DF LIST OUTPUT 4GRAM.csv', 'w')
+savefile_DFList = open(directory + 'DF LIST OUTPUT 1GRAM.csv', 'w')
+savefile_DFList_2GRAM = open(directory + 'DF LIST OUTPUT 2GRAM.csv', 'w')
+savefile_DFList_3GRAM = open(directory + 'DF LIST OUTPUT 3GRAM.csv', 'w')
+savefile_DFList_4GRAM = open(directory + 'DF LIST OUTPUT 4GRAM.csv', 'w')
 
-savefile3 = open('TF-IDF OUTPUT ONLY.csv', 'w')
+savefile3 = open(directory + 'TF-IDF OUTPUT ONLY.csv', 'w')
 # savefile_FULLTEXT = open('FULL TEXT FROM WEBSITE.csv')
 
 reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
