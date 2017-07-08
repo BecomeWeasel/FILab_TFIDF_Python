@@ -1,1 +1,10 @@
 # Created by .ignore support plugin (hsz.mobi)
+*.txt
+*.idea
+/*.csv
+DF LIST OUTPUT 1GRAM.csv
+DF LIST OUTPUT 2GRAM.csv
+DF LIST OUTPUT 3GRAM.csv
+DF LIST OUTPUT 4GRAM.csv
+TF-IDF OUTPUT ONLY.csv
+__pycache__
