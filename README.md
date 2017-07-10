@@ -1,2 +1,4 @@
-# FI_LAB_TFIDF
-# FILAB_TFIDF PYTHON
+TFIDF Moudle
+
+hsw0194@gmail.com
+hsw0194@hanyang.ac.kr
