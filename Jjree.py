@@ -155,9 +155,19 @@ savefile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extra
 
 savefile2 = open('TF-IDF OUTPUT (1989).csv', 'w')
 
+
+savefile_2gram_1st=open(directory+'2GRAM OUTPUT 1ST (1989).csv','w')
+savefile_2gram_2nd=open(directory+'2GRAM OUTPUT 2ND (1989).csv','w')
 savefile_2gram = open(directory + '2GRAM OUTPUT (1989).csv', 'w')
+
+savefile_3gram_1st=open(directory+'3GRAM OUTPUT 1ST (1989).csv','w')
+savefile_3gram_2nd=open(directory+'3GRAM OUTPUT 2ND (1989).csv','w')
 savefile_3gram = open(directory + '3GRAM OUTPUT (1989).csv', 'w')
+
+savefile_4gram_1st=open(directory+'4GRAM OUTPUT 1ST (1989).csv','w')
+savefile_4gram_2nd=open(directory+'4GRAM OUTPUT 2ND (1989).csv','w')
 savefile_4gram = open(directory + '4GRAM OUTPUT (1989).csv', 'w')
+
 savefile_2gram_TFIDF = open(directory + '2GRAM OUTPUT TFIDF (1989).csv', 'w')
 savefile_3gram_TFIDF = open(directory + '3GRAM OUTPUT TFIDF (1989).csv', 'w')
 savefile_4gram_TFIDF = open(directory + '4GRAM OUTPUT TFIDF (1989).csv', 'w')
@@ -176,9 +186,19 @@ HPPListreader = csv.reader(HPPListFile, delimiter=',', quotechar='|')
 
 # masterwriter = csv.writer(masterTxtFile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer = csv.writer(savefile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer2gram1st=csv.writer(savefile_2gram_1st,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer2gram2nd=csv.writer(savefile_2gram_2nd,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer2gram = csv.writer(savefile_2gram, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+writer3gram1st=csv.writer(savefile_3gram_1st,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer3gram2nd=csv.writer(savefile_3gram_2nd,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer3gram = csv.writer(savefile_3gram, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+writer4gram1st=csv.writer(savefile_4gram_1st,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer4gram2nd=csv.writer(savefile_4gram_2nd,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer4gram = csv.writer(savefile_4gram, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+
 writer2gramTFIDF = csv.writer(savefile_2gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer3gramTFIDF = csv.writer(savefile_3gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer4gramTFIDF = csv.writer(savefile_4gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -218,6 +238,8 @@ numDocWithVocab3Gram = {}
 numDocWithVocab3GramAscending = {}
 numDocWithVocab4Gram = {}
 numDocWithVocab4GramAscending = {}
+
+# TODO : need more variable can be used both function and duplication of variable numDocWithVocabNgram.
 
 fullPatentVocabDict = {}
 fullPatentVocabDict2Gram = {}
@@ -320,7 +342,7 @@ def getPatentAndCalcTF(start,
 
     ############
     ############ variable used in function : getPatentA ndCalcTF and function : DFAndTFIDF
-    global urlNum
+    # global urlNum
     global word
     global numDocWithVocab
     global numDocWithVocabAscending
@@ -345,13 +367,11 @@ def getPatentAndCalcTF(start,
 
 
     starttmp = start
-    urlNum = start + 1
+    # urlNum = start + 1
     # for url in reader:
 
     for head in range(start, end + 1):
-        # if urlNum == end:
-        # urlNum -= 1
-        # return None
+
         textVocabs = {}
         textVocabs_items = {}
         textVocabsAscending = {}
@@ -365,7 +385,7 @@ def getPatentAndCalcTF(start,
 
         newUrl = ''.join(['https://patents.google.com/patent/', tmpmatrix[head], '/en'])
 
-        print("\nURL NUMBER: " + str(urlNum) + " = " + newUrl)
+        print("\nURL NUMBER: " + str(head + 1) + " = " + newUrl)
 
         urlText, backCitation, pubDate = readWEBSITE.getText(newUrl)
 
@@ -390,7 +410,7 @@ def getPatentAndCalcTF(start,
         ### END OF URL EXTRACTION FROM CSV FILE AND WRITING BACKWARD CITATION AND PUB YEAR IN SAME CSV FILE
 
         ##################################################################################
-        ### START FINDING KEY WORDS
+        ###             START FINDING KEY WORDS
         ##################################################################################
         doc = nlp(urlText.decode('utf-8'))
 
@@ -406,15 +426,17 @@ def getPatentAndCalcTF(start,
         ##################################################################################
 
 
-        try:
-            ngramDoc = textacy.Doc(document)
+        # try:            ngramDoc = textacy.Doc(document)
+        ngramDoc=textacy.Doc(document)
+
+        # except urllib.error.HTTPError as e:
+        #     print("RUNTIME ERROR AT THIS PATENT")
+        #     errorPatents.append(urlNum)
+        #     continue
 
 
-        except urllib.error.HTTPError as e:
-            print("RUNTIME ERROR AT THIS PATENT")
-            errorPatents.append(urlNum)
-            continue
-        # ngramDoc = [words for words in ngramDoc if words.is_stop == False]
+
+        # # ngramDoc = [words for words in ngramDoc if words.is_stop == False]
 
 
         # print("---Printing NGRAMS---")
@@ -452,7 +474,7 @@ def getPatentAndCalcTF(start,
             twoGramsSortedText = " : ".join([(word[0]), str(word[1])])
             twoGramsSortedText1.append(twoGramsSortedText)
 
-        fullPatentVocabDict2Gram[urlNum] = twoGramsSorted
+        fullPatentVocabDict2Gram[head + 1] = twoGramsSorted
         twoGramsSortedText1 = str(twoGramsSortedText1)
         writer2gram.writerow(
             twoGramsSortedText1.split(","))  # save sequence happen here. # TODO : this line ,may, need two version.
@@ -483,7 +505,7 @@ def getPatentAndCalcTF(start,
             threeGramsSortedText = " : ".join([(word[0]), str(word[1])])
             threeGramsSortedText1.append(threeGramsSortedText)
 
-        fullPatentVocabDict3Gram[urlNum] = threeGramsSorted
+        fullPatentVocabDict3Gram[head + 1] = threeGramsSorted
         threeGramsSortedText1 = str(threeGramsSortedText1)
         writer3gram.writerow(threeGramsSortedText1.split(","))
 
@@ -513,7 +535,7 @@ def getPatentAndCalcTF(start,
             fourGramsSortedText = " : ".join([(word[0]), str(word[1])])
             fourGramsSortedText1.append(fourGramsSortedText)
 
-        fullPatentVocabDict4Gram[urlNum] = fourGramsSorted
+        fullPatentVocabDict4Gram[head + 1] = fourGramsSorted
         fourGramsSortedText1 = str(fourGramsSortedText1)
         writer4gram.writerow(fourGramsSortedText1.split(","))
 
@@ -523,8 +545,7 @@ def getPatentAndCalcTF(start,
         numDocWithVocab4Gram_items = numDocWithVocab4Gram.items()
         numDocWithVocab4GramAscending = sorted(numDocWithVocab4Gram_items, key=lambda x: x[1] * -1)
 
-        urlNum += 1
-        starttmp += 1
+
 
         '''
         ###########################################################
@@ -651,26 +672,42 @@ def getPatentAndCalcTF(start,
 
 
 timeFuncStart = time.time()
-getPatentAndCalcTF(0, floor(49 / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
+getPatentAndCalcTF(0, floor(PatCOUNT[int(yearOfPatents)%1989] / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
 timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
 
-timeFuncStart = time.time()
-getPatentAndCalcTF(floor(49 / 2), 49 - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
-timeFuncEnd = time.time()
 
-savefile_2gram.close()  # TODO : FIXED @7.7 05:29 fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
-savefile_3gram.close()  # identifying of problem cause is not yet done. @ 7.9 03:00
-savefile_4gram.close()
+
+timeFuncStart = time.time()
+getPatentAndCalcTF(floor(PatCOUNT[int(yearOfPatents)%1989]/ 2), PatCOUNT[int(yearOfPatents)%1989] - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
+timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
 
-# print(errorPatents)
+
+##################################################################################
+# merge "'N'GRAM OUTPUT ('yearOfPatents') 1st.csv" and "'N'GRAM OUTPUT ('yearOfPatents') 2nd.csv"
+# "'N'GRAM OUTPUT ('yearOfPatents') 2nd.csv" into one file
+# "'N'GRAM OUTPUT ('yearOfPatents').csv"
+# below section is merging sequence code.
+# TODO: merging code need.
+##################################################################################
+
+
+savefile_2gram_1st.close()
+savefile_3gram_1st.close()
+savefile_4gram_1st.close()
+
+savefile_2gram_2nd.close()
+savefile_3gram_2nd.close()
+savefile_4gram_2nd.close()
+
 
 ##################################################################################
 # CALCULATING TF-IDF 2GRAM
 ##################################################################################
 timeStart = time.time()
-# TODO : Need to group func getPatentAndCalcTF and func calcTFIDF
+
+# TODO : functionize calculation of TFIDF need
 
 print("-----Calculating TF-IDF----- 2GRAM")
 
@@ -702,7 +739,7 @@ for patNum in fullPatentVocabDict2Gram:
 
                 word.append(TF_IDF)
                 word = tuple(word)
-                word1[1] = TF_IDF  # TODO: TF/IDF calculation works well. maybe save problem. overwrite on word1[1]
+                word1[1] = TF_IDF
                 # don't need to word1[1]=TF_IDF cause already word1[2]==TF_IDF is true . don't know why.
                 word1 = tuple(word1)
                 fullPatentVocabDict2Gram[i][j] = word1
@@ -919,6 +956,11 @@ csvfile.close()
 csvfile_DFCalc.close()
 savefile.close()
 savefile2.close()
+
+savefile_2gram.close()# TODO : FIXED @7.7 05:29 fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
+savefile_3gram.close()  # identifying of problem cause is not yet done. @ 7.9 03:00
+savefile_4gram.close()
+
 # savefile_FULLTEXT.close()
 # savefile_2gram.close()
 # savefile_3gram.close()
