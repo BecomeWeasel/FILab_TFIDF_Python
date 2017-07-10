@@ -693,6 +693,7 @@ print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND
 ##################################################################################
 
 
+
 savefile_2gram_1st.close()
 savefile_3gram_1st.close()
 savefile_4gram_1st.close()
@@ -957,9 +958,12 @@ csvfile_DFCalc.close()
 savefile.close()
 savefile2.close()
 
+
+
 savefile_2gram.close()# TODO : FIXED @7.7 05:29 fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
 savefile_3gram.close()  # identifying of problem cause is not yet done. @ 7.9 03:00
 savefile_4gram.close()
+
 
 # savefile_FULLTEXT.close()
 # savefile_2gram.close()
