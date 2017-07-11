@@ -12,6 +12,7 @@ from pathlib import Path
 import json
 import os
 import time
+import io
 import multiprocessing
 from math import floor
 
@@ -110,6 +111,9 @@ savefile = open('(01)Graphene_5446_1.csv', 'w')
 
 # Jjree.py's path for outputs saving
 directory = os.getcwd()
+inputdirectory = directory + "/inputs/"
+if not os.path.exists(inputdirectory):
+    os.mkdir(inputdirectory, 0o755)
 directory = directory + "/outputs/"
 if not os.path.exists(directory):
     os.mkdir(directory, 0o755)
@@ -155,17 +159,16 @@ savefile = open('(03)DSSC_9501 PatSnap v.02 1989 Patent for yearly keyword extra
 
 savefile2 = open('TF-IDF OUTPUT (1989).csv', 'w')
 
-
-savefile_2gram_1st=open(directory+'2GRAM OUTPUT 1ST (1989).csv','w')
-savefile_2gram_2nd=open(directory+'2GRAM OUTPUT 2ND (1989).csv','w')
+savefile_2gram_1st = open(directory + '2GRAM OUTPUT 1ST (1989).csv', 'w')
+savefile_2gram_2nd = open(directory + '2GRAM OUTPUT 2ND (1989).csv', 'w')
 savefile_2gram = open(directory + '2GRAM OUTPUT (1989).csv', 'w')
 
-savefile_3gram_1st=open(directory+'3GRAM OUTPUT 1ST (1989).csv','w')
-savefile_3gram_2nd=open(directory+'3GRAM OUTPUT 2ND (1989).csv','w')
+savefile_3gram_1st = open(directory + '3GRAM OUTPUT 1ST (1989).csv', 'w')
+savefile_3gram_2nd = open(directory + '3GRAM OUTPUT 2ND (1989).csv', 'w')
 savefile_3gram = open(directory + '3GRAM OUTPUT (1989).csv', 'w')
 
-savefile_4gram_1st=open(directory+'4GRAM OUTPUT 1ST (1989).csv','w')
-savefile_4gram_2nd=open(directory+'4GRAM OUTPUT 2ND (1989).csv','w')
+savefile_4gram_1st = open(directory + '4GRAM OUTPUT 1ST (1989).csv', 'w')
+savefile_4gram_2nd = open(directory + '4GRAM OUTPUT 2ND (1989).csv', 'w')
 savefile_4gram = open(directory + '4GRAM OUTPUT (1989).csv', 'w')
 
 savefile_2gram_TFIDF = open(directory + '2GRAM OUTPUT TFIDF (1989).csv', 'w')
@@ -180,24 +183,23 @@ savefile_DFList_4GRAM = open(directory + 'DF LIST OUTPUT 4GRAM.csv', 'w')
 savefile3 = open(directory + 'TF-IDF OUTPUT ONLY.csv', 'w')
 # savefile_FULLTEXT = open('FULL TEXT FROM WEBSITE.csv')
 
-reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+reader = csv.reader(csvfile, delimiter=' ', quotechar='|')  # TODO : What is delimiter? quotechar ?
 reader2 = csv.reader(csvfile_DFCalc, delimiter=' ', quotechar='|')
 HPPListreader = csv.reader(HPPListFile, delimiter=',', quotechar='|')
 
 # masterwriter = csv.writer(masterTxtFile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer = csv.writer(savefile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-writer2gram1st=csv.writer(savefile_2gram_1st,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-writer2gram2nd=csv.writer(savefile_2gram_2nd,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer2gram1st = csv.writer(savefile_2gram_1st, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer2gram2nd = csv.writer(savefile_2gram_2nd, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer2gram = csv.writer(savefile_2gram, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-writer3gram1st=csv.writer(savefile_3gram_1st,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-writer3gram2nd=csv.writer(savefile_3gram_2nd,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer3gram1st = csv.writer(savefile_3gram_1st, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer3gram2nd = csv.writer(savefile_3gram_2nd, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer3gram = csv.writer(savefile_3gram, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-writer4gram1st=csv.writer(savefile_4gram_1st,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-writer4gram2nd=csv.writer(savefile_4gram_2nd,delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer4gram1st = csv.writer(savefile_4gram_1st, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writer4gram2nd = csv.writer(savefile_4gram_2nd, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer4gram = csv.writer(savefile_4gram, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-
 
 writer2gramTFIDF = csv.writer(savefile_2gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer3gramTFIDF = csv.writer(savefile_3gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -238,8 +240,6 @@ numDocWithVocab3Gram = {}
 numDocWithVocab3GramAscending = {}
 numDocWithVocab4Gram = {}
 numDocWithVocab4GramAscending = {}
-
-# TODO : need more variable can be used both function and duplication of variable numDocWithVocabNgram.
 
 fullPatentVocabDict = {}
 fullPatentVocabDict2Gram = {}
@@ -295,37 +295,36 @@ for url in reader:
     tmpmatrix.append(url[0])
 # print(tmpmatrix[0], tmpmatrix[1])
 
-'''
-# FINDING DF OF HPP'S WORDS
-for HPP in reader2:
+
+# FINDING DF OF HPP'S WORDS for 1GRAM
+for HPP in reader2:  # making HPP's word tracked list
     HPPwordListTemp = []
-    
-    
+
     for word in HPP:
-        HPPwordListTemp1 = []
-        
-        word = word.replace(",", "")
-        
+        HPPwordListTemp1 = []  # TODO : need to check word's first character and seperate.
+
+        word = word.replace(",", "")  # eliminate comma in word this line
+
         HPPwordListTemp1.append(word)
         HPPwordListTemp1.append(DFCOUNT)
         HPPwordListTemp.append(HPPwordListTemp1)
-        
-    #print(HPPwordListTemp)
+
+    # print(HPPwordListTemp)
     HPPwordList[HPPNUM] = HPPwordListTemp
-    HPPNUM +=1
- 
+    HPPNUM += 1
+
 for key in HPPwordList.keys():
-    i=0
+    i = 0
     for word in HPPwordList[key]:
         w = word[0]
         word[1] = DFReader.dfRead(w, key, HPPwordList)
-        #print(word)
+        # TODO : paramet of dfRead should be entire word, not w(word[0]). if 1st parameter of dfRead is w, dfcount value changed too frequently.
+        # print(word)
         HPPwordList[key][i] = word
-        i+=1
+        i += 1
     print(HPPwordList[key])
     HPPwordList1 = str(HPPwordList[key])
     writerDFLIST.writerow(HPPwordList1.split(","))
-'''
 
 
 # Performance is usually relative to execution speed.
@@ -427,7 +426,7 @@ def getPatentAndCalcTF(start,
 
 
         # try:            ngramDoc = textacy.Doc(document)
-        ngramDoc=textacy.Doc(document)
+        ngramDoc = textacy.Doc(document)
 
         # except urllib.error.HTTPError as e:
         #     print("RUNTIME ERROR AT THIS PATENT")
@@ -477,7 +476,7 @@ def getPatentAndCalcTF(start,
         fullPatentVocabDict2Gram[head + 1] = twoGramsSorted
         twoGramsSortedText1 = str(twoGramsSortedText1)
         writer2gram.writerow(
-            twoGramsSortedText1.split(","))  # save sequence happen here. # TODO : this line ,may, need two version.
+            twoGramsSortedText1.split(","))  # save sequence happen here. #
 
         # CALCULATING DF OF 2GRAM TERMS
         for vocabInDoc in twoGramsSorted:
@@ -544,8 +543,6 @@ def getPatentAndCalcTF(start,
             numDocWithVocab4Gram[vocabInDoc[0]] = numDocWithVocab4Gram.get(vocabInDoc[0], 0) + 1
         numDocWithVocab4Gram_items = numDocWithVocab4Gram.items()
         numDocWithVocab4GramAscending = sorted(numDocWithVocab4Gram_items, key=lambda x: x[1] * -1)
-
-
 
         '''
         ###########################################################
@@ -672,17 +669,16 @@ def getPatentAndCalcTF(start,
 
 
 timeFuncStart = time.time()
-getPatentAndCalcTF(0, floor(PatCOUNT[int(yearOfPatents)%1989] / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
+getPatentAndCalcTF(0, floor(
+    PatCOUNT[int(yearOfPatents) % 1989] / 2) - 1)  # call getPatentAndCalcTF and execute half part of patent @ 7.8 00:52
 timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 1ST".format(timeFuncEnd - timeFuncStart))
 
-
-
 timeFuncStart = time.time()
-getPatentAndCalcTF(floor(PatCOUNT[int(yearOfPatents)%1989]/ 2), PatCOUNT[int(yearOfPatents)%1989] - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
+getPatentAndCalcTF(floor(PatCOUNT[int(yearOfPatents) % 1989] / 2), PatCOUNT[
+    int(yearOfPatents) % 1989] - 2)  # call getPatentAndCalcTF and execute remain part of patent @ 7.8 00:52
 timeFuncEnd = time.time()
 print("It has been {0} seconds for the get Patent and calculate TF of N-gram 2ND".format(timeFuncEnd - timeFuncStart))
-
 
 ##################################################################################
 # merge "'N'GRAM OUTPUT ('yearOfPatents') 1st.csv" and "'N'GRAM OUTPUT ('yearOfPatents') 2nd.csv"
@@ -701,7 +697,6 @@ savefile_4gram_1st.close()
 savefile_2gram_2nd.close()
 savefile_3gram_2nd.close()
 savefile_4gram_2nd.close()
-
 
 ##################################################################################
 # CALCULATING TF-IDF 2GRAM
@@ -958,12 +953,9 @@ csvfile_DFCalc.close()
 savefile.close()
 savefile2.close()
 
-
-
-savefile_2gram.close()# TODO : FIXED @7.7 05:29 fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
+savefile_2gram.close()  # TODO : FIXED @7.7 05:29 fisrt priority problem occured in write tfidf. TFDIF csv file is same as TF csv file.
 savefile_3gram.close()  # identifying of problem cause is not yet done. @ 7.9 03:00
 savefile_4gram.close()
-
 
 # savefile_FULLTEXT.close()
 # savefile_2gram.close()
