@@ -260,7 +260,7 @@ for stopWord in stopWordList:
 
 # GETTING HPP WORD LIST
 
-HPPNUM = 1
+HPP_HEADER = 0 # Used in DF Calc part.
 DFCOUNT = [0, 0, 0, 0, 0,
            0, 0, 0, 0, 0,
            0, 0, 0, 0, 0,
@@ -297,7 +297,19 @@ for url in reader:
 
 
 # FINDING DF OF HPP'S WORDS for 1GRAM
+
+startlocation = 3
+# assume input = 10 , means that started from 10th HPP.
+
+# HPP_HEADER = input
+END = False
+
 for HPP in reader2:  # making HPP's word tracked list
+    HPP_HEADER += 1  # HPP_HEADER means number n HEADER execute DF calc.
+
+    if HPP_HEADER < startlocation:  # HPP_HEADER not reach at startpointyet.
+        continue
+
     HPPwordListTemp = []
 
     for word in HPP:
@@ -310,21 +322,27 @@ for HPP in reader2:  # making HPP's word tracked list
         HPPwordListTemp.append(HPPwordListTemp1)
 
     # print(HPPwordListTemp)
-    HPPwordList[HPPNUM] = HPPwordListTemp
-    HPPNUM += 1
+    HPPwordList[HPP_HEADER] = HPPwordListTemp
+    # HPPNUM += 1
 
 for key in HPPwordList.keys():
+
+    timenow = time.time()
     i = 0
     for word in HPPwordList[key]:
         w = word[0]
+
         word[1] = DFReader.dfRead(w, key, HPPwordList)
         # TODO : paramet of dfRead should be entire word, not w(word[0]). if 1st parameter of dfRead is w, dfcount value changed too frequently.
         # print(word)
+
         HPPwordList[key][i] = word
         i += 1
     print(HPPwordList[key])
     HPPwordList1 = str(HPPwordList[key])
     writerDFLIST.writerow(HPPwordList1.split(","))
+    timeend = time.time()
+    print("it takes {0} sec for the DF Calc for HPP ".format(timeend - timenow) + str(i))
 
 
 # Performance is usually relative to execution speed.
