@@ -179,7 +179,8 @@ savefile_2gram_TFIDF = open(directory + '2GRAM OUTPUT TFIDF (1989).csv', 'w')
 savefile_3gram_TFIDF = open(directory + '3GRAM OUTPUT TFIDF (1989).csv', 'w')
 savefile_4gram_TFIDF = open(directory + '4GRAM OUTPUT TFIDF (1989).csv', 'w')
 
-savefile_DFList = open(directory + 'DF LIST OUTPUT 1GRAM.csv', 'w')
+savefile_DFList1st = open(directory + 'DF LIST OUTPUT 1GRAM P1.csv', 'w')
+savefile_DFList2nd = open(directory + 'DF LIST OUTPUT 1GRAM P2.csv', 'w')
 savefile_DFList_2GRAM = open(directory + 'DF LIST OUTPUT 2GRAM.csv', 'w')
 savefile_DFList_3GRAM = open(directory + 'DF LIST OUTPUT 3GRAM.csv', 'w')
 savefile_DFList_4GRAM = open(directory + 'DF LIST OUTPUT 4GRAM.csv', 'w')
@@ -209,7 +210,8 @@ writer2gramTFIDF = csv.writer(savefile_2gram_TFIDF, delimiter=',', quotechar='|'
 writer3gramTFIDF = csv.writer(savefile_3gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer4gramTFIDF = csv.writer(savefile_4gram_TFIDF, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
-writerDFLIST = csv.writer(savefile_DFList, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writerDFLIST1st = csv.writer(savefile_DFList1st, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+writerDFLIST2nd = csv.writer(savefile_DFList2nd, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 
 writer2 = csv.writer(savefile2, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
 writer3 = csv.writer(savefile3, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -317,14 +319,12 @@ for url in reader:
 def DFCalcofHPPword(startyear):
     global writerDFLIST
     global reader2
-    if (startyear%2)==0:
-        csvfilecheck=open('check2nd.csv','w')
+    if (startyear % 2) == 0:
+        csvfilecheck = open('check2nd.csv', 'w')
         csvfilecheck.close()
     else:
-        csvfilecheck1st=open('check1st.csv','w')
+        csvfilecheck1st = open('check1st.csv', 'w')
         csvfilecheck1st.close()
-
-
 
     funcstartpoint = startyear - 1988
     HPP_HEADER = 0
@@ -367,7 +367,10 @@ def DFCalcofHPPword(startyear):
             i += 1
         print(HPPwordList[key])
         HPPwordList1 = str(HPPwordList[key])
-        writerDFLIST.writerow(HPPwordList1.split(","))
+        if (startyear % 2) == 1:
+            writerDFLIST1st.writerow(HPPwordList1.split(","))
+        else:
+            writerDFLIST2nd.writerow(HPPwordList1.split(","))
         timeend = time.time()
         print("it takes {0} sec for the DF Calc for HPP ".format(timeend - timenow) + str(i))
         return None
@@ -378,12 +381,13 @@ def DFCalcofHPPword(startyear):
 
 ############## Parallel execution of "DFCalcofHPPword" temporary part.
 
-if __name__=='__main__':
-    p=Pool(2)
-    results=p.map_async(DFCalcofHPPword,range(1989,1991))
+if __name__ == '__main__':
+    p = Pool(2)
+    results = p.map_async(DFCalcofHPPword, range(1989, 1991))
     # p.map(DFCalcofHPPword(1989))
     # p.map(DFCalcofHPPword(1990))
     results.wait()
+
 
 ##############
 
