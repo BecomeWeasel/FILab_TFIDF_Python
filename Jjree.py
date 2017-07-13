@@ -299,16 +299,15 @@ for url in reader:
 # FINDING DF OF HPP'S WORDS for 1GRAM
 
 startlocation = 3
-# assume input = 10 , means that started from 10th HPP.
+# if startlocation= 10 , means DF CALC  started from 10th HPP.
 
-# HPP_HEADER = input
-END = False
+
 
 for HPP in reader2:  # making HPP's word tracked list
-    HPP_HEADER += 1  # HPP_HEADER means number n HEADER execute DF calc.
+    HPP_HEADER += 1  # HPP_HEADER means execute "N"th DF calc.
 
-    if HPP_HEADER < startlocation:  # HPP_HEADER not reach at startpointyet.
-        continue
+    if HPP_HEADER < startlocation:  # HPP_HEADER not reach at startpoint yet.
+        continue                    # so read next row in the reader2.
 
     HPPwordListTemp = []
 
@@ -329,6 +328,7 @@ for key in HPPwordList.keys():
 
     timenow = time.time()
     i = 0
+    # key에 좀 더해야하나 ? header를 ?
     for word in HPPwordList[key]:
         w = word[0]
 
