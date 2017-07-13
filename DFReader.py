@@ -4,6 +4,7 @@ import csv
 import math
 import os
 
+from multiprocessing import Process,current_process
 
 def dfRead(HPPword, HPPkey, HPPwordList):
     # only 1GRAM TFIDF OUTPUT OF ALL PATENT AT THAT YEAR
@@ -81,6 +82,9 @@ def dfRead(HPPword, HPPkey, HPPwordList):
     print(
         "===================================================== COMPARING NEW WORD ===================================: " + HPPword + " HPPkey: " + str(
             HPPkey))
+    print(os.getpid())
+
+
     '''
     for key in HPPwordList.keys():
         

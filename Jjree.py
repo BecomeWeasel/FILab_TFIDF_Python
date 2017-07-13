@@ -13,7 +13,7 @@ import json
 import os
 import time
 import io
-import multiprocessing
+from multiprocessing import Process,Queue
 from math import floor
 
 import nltk
@@ -109,11 +109,15 @@ csvfile = open('(01)Graphene_5446.csv', 'r+')
 savefile = open('(01)Graphene_5446_1.csv', 'w')
 '''
 
-# Jjree.py's path for outputs saving
+# Jjree.py's path
 directory = os.getcwd()
+
+# Jjree.py's path for inputs saving
 inputdirectory = directory + "/inputs/"
 if not os.path.exists(inputdirectory):
     os.mkdir(inputdirectory, 0o755)
+
+# Jjree.py's path for outputs saving
 directory = directory + "/outputs/"
 if not os.path.exists(directory):
     os.mkdir(directory, 0o755)
@@ -260,7 +264,7 @@ for stopWord in stopWordList:
 
 # GETTING HPP WORD LIST
 
-HPP_HEADER = 0 # Used in DF Calc part.
+# HPP_HEADER = 0 # Used in DF Calc part.
 DFCOUNT = [0, 0, 0, 0, 0,
            0, 0, 0, 0, 0,
            0, 0, 0, 0, 0,
@@ -275,7 +279,7 @@ PatCOUNT = [49, 68, 81, 85, 107,
             1457, 1086, 430]
 HPPList = []
 HPPWords = {}
-HPPwordList = {}
+# HPPwordList = {}
 errorPatents = []
 
 # CREATING PATENT LIST OF HPP
@@ -293,56 +297,92 @@ for patent in HPPListreader:
 tmpmatrix = []
 for url in reader:
     tmpmatrix.append(url[0])
+
+
 # print(tmpmatrix[0], tmpmatrix[1])
 
 
 # FINDING DF OF HPP'S WORDS for 1GRAM
 
-startlocation = 3
+
+
+
+
 # if startlocation= 10 , means DF CALC  started from 10th HPP.
 
 
 
-for HPP in reader2:  # making HPP's word tracked list
-    HPP_HEADER += 1  # HPP_HEADER means execute "N"th DF calc.
 
-    if HPP_HEADER < startlocation:  # HPP_HEADER not reach at startpoint yet.
-        continue                    # so read next row in the reader2.
+############## finding DF of HPP's Nounchunk.
 
-    HPPwordListTemp = []
+def DFCalcofHPPword(startyear,result):
+    global writerDFLIST
+    global reader2
 
-    for word in HPP:
-        HPPwordListTemp1 = []  # TODO : need to check word's first character and seperate.
+    funcstartpoint = startyear - 1988
+    HPP_HEADER = 0
+    HPPwordList = {}
+    for HPP in reader2:  # making HPP's word tracked list
 
-        word = word.replace(",", "")  # eliminate comma in word this line
+        HPP_HEADER += 1  # HPP_HEADER means execute "N"th DF calc.
 
-        HPPwordListTemp1.append(word)
-        HPPwordListTemp1.append(DFCOUNT)
-        HPPwordListTemp.append(HPPwordListTemp1)
+        if HPP_HEADER < funcstartpoint:  # HPP_HEADER not reach at startpoint yet.
+            continue  # so read next row in the reader2.
 
-    # print(HPPwordListTemp)
-    HPPwordList[HPP_HEADER] = HPPwordListTemp
-    # HPPNUM += 1
+        HPPwordListTemp = []
 
-for key in HPPwordList.keys():
+        for wordofrow in HPP:
+            HPPwordListTemp1 = []  # TODO : need to check word's first character and seperate.
 
-    timenow = time.time()
-    i = 0
-    # key에 좀 더해야하나 ? header를 ?
-    for word in HPPwordList[key]:
-        w = word[0]
+            wordofrow = wordofrow.replace(",", "")  # eliminate comma in word this line
 
-        word[1] = DFReader.dfRead(w, key, HPPwordList)
-        # TODO : paramet of dfRead should be entire word, not w(word[0]). if 1st parameter of dfRead is w, dfcount value changed too frequently.
-        # print(word)
+            HPPwordListTemp1.append(wordofrow)
+            HPPwordListTemp1.append(DFCOUNT)
+            HPPwordListTemp.append(HPPwordListTemp1)
 
-        HPPwordList[key][i] = word
-        i += 1
-    print(HPPwordList[key])
-    HPPwordList1 = str(HPPwordList[key])
-    writerDFLIST.writerow(HPPwordList1.split(","))
-    timeend = time.time()
-    print("it takes {0} sec for the DF Calc for HPP ".format(timeend - timenow) + str(i))
+        # print(HPPwordListTemp)
+        HPPwordList[HPP_HEADER] = HPPwordListTemp
+        # HPPNUM += 1
+
+    for key in HPPwordList.keys():
+
+        timenow = time.time()
+        i = 0
+        # key에 좀 더해야하나 ? header를 ?
+        for wordofkeys in HPPwordList[key]:
+            w = wordofkeys[0]
+
+            wordofkeys[1] = DFReader.dfRead(w, key, HPPwordList)
+            # TODO : paramet of dfRead should be entire word, not w(word[0]). if 1st parameter of dfRead is w, dfcount value changed too frequently.
+            # print(word)
+
+            HPPwordList[key][i] = wordofkeys
+            i += 1
+        print(HPPwordList[key])
+        HPPwordList1 = str(HPPwordList[key])
+        result.put(HPPwordList1)
+        return
+        writerDFLIST.writerow(HPPwordList1.split(","))
+        timeend = time.time()
+        print("it takes {0} sec for the DF Calc for HPP ".format(timeend - timenow) + str(i))
+
+
+############## Finding DF of HPP's Nounchunk end.
+
+ijaifd=3
+result=""
+result1=""
+
+proc1=Process(target=DFCalcofHPPword(1989,result))
+proc2=Process(target=DFCalcofHPPword(1990,result1))
+proc1.start()
+proc2.start()
+proc1.join()
+proc2.join()
+
+
+
+# DFCalcofHPPword(1990)
 
 
 # Performance is usually relative to execution speed.
@@ -353,8 +393,7 @@ for key in HPPwordList.keys():
 
 
 
-def getPatentAndCalcTF(start,
-                       end):  # TODO: if end==0, result write on 2GRAM OUTPUT("YEAR").csv else result write on 2GRAM OUTPUT("YEAR").csv
+def getPatentAndCalcTF(start, end):
     # GETTING TEXT FROM GOOGLE PATENT WEBSITES
 
     ############
