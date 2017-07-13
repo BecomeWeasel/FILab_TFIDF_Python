@@ -13,7 +13,7 @@ import json
 import os
 import time
 import io
-from multiprocessing import Process,Queue
+from multiprocessing import *
 from math import floor
 
 import nltk
@@ -302,7 +302,6 @@ for url in reader:
 # print(tmpmatrix[0], tmpmatrix[1])
 
 
-# FINDING DF OF HPP'S WORDS for 1GRAM
 
 
 
@@ -315,9 +314,17 @@ for url in reader:
 
 ############## finding DF of HPP's Nounchunk.
 
-def DFCalcofHPPword(startyear,result):
+def DFCalcofHPPword(startyear):
     global writerDFLIST
     global reader2
+    if (startyear%2)==0:
+        csvfilecheck=open('check2nd.csv','w')
+        csvfilecheck.close()
+    else:
+        csvfilecheck1st=open('check1st.csv','w')
+        csvfilecheck1st.close()
+
+
 
     funcstartpoint = startyear - 1988
     HPP_HEADER = 0
@@ -360,29 +367,27 @@ def DFCalcofHPPword(startyear,result):
             i += 1
         print(HPPwordList[key])
         HPPwordList1 = str(HPPwordList[key])
-        result.put(HPPwordList1)
-        return
         writerDFLIST.writerow(HPPwordList1.split(","))
         timeend = time.time()
         print("it takes {0} sec for the DF Calc for HPP ".format(timeend - timenow) + str(i))
+        return None
 
 
 ############## Finding DF of HPP's Nounchunk end.
 
-ijaifd=3
-result=""
-result1=""
 
-proc1=Process(target=DFCalcofHPPword(1989,result))
-proc2=Process(target=DFCalcofHPPword(1990,result1))
-proc1.start()
-proc2.start()
-proc1.join()
-proc2.join()
+############## Parallel execution of "DFCalcofHPPword" temporary part.
+
+if __name__=='__main__':
+    p=Pool(2)
+    results=p.map_async(DFCalcofHPPword,range(1989,1991))
+    # p.map(DFCalcofHPPword(1989))
+    # p.map(DFCalcofHPPword(1990))
+    results.wait()
+
+##############
 
 
-
-# DFCalcofHPPword(1990)
 
 
 # Performance is usually relative to execution speed.
