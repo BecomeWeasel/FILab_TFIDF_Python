@@ -288,11 +288,6 @@ errorPatents = []
 for patent in HPPListreader:
     HPPList.append(patent)
 
-# print(HPPList)
-# print(HPPList[1][2])
-# print(HPPList[1][1])
-
-
 
 
 ###
@@ -301,15 +296,9 @@ for url in reader:
     tmpmatrix.append(url[0])
 
 
-# print(tmpmatrix[0], tmpmatrix[1])
 
 
 
-
-
-
-
-# if startlocation= 10 , means DF CALC  started from 10th HPP.
 
 
 
@@ -338,12 +327,12 @@ def DFCalcofHPPword(startyear):
 
         HPPwordListTemp = []
 
-        for wordofrow in HPP:
+        for wordInRow in HPP:
             HPPwordListTemp1 = []  # TODO : need to check word's first character and seperate.
 
-            wordofrow = wordofrow.replace(",", "")  # eliminate comma in word this line
+            wordInRow = wordInRow.replace(",", "")  # eliminate comma in word this line
 
-            HPPwordListTemp1.append(wordofrow)
+            HPPwordListTemp1.append(wordInRow)
             HPPwordListTemp1.append(DFCOUNT)
             HPPwordListTemp.append(HPPwordListTemp1)
 
@@ -356,14 +345,14 @@ def DFCalcofHPPword(startyear):
         timenow = time.time()
         i = 0
         # key에 좀 더해야하나 ? header를 ?
-        for wordofkeys in HPPwordList[key]:
-            w = wordofkeys[0]
+        for wordInKeys in HPPwordList[key]:
+            w = wordInKeys[0]
 
-            wordofkeys[1] = DFReader.dfRead(w, key, HPPwordList)
+            wordInKeys[1] = DFReader.dfRead(w, key, HPPwordList)
             # TODO : paramet of dfRead should be entire word, not w(word[0]). if 1st parameter of dfRead is w, dfcount value changed too frequently.
             # print(word)
 
-            HPPwordList[key][i] = wordofkeys
+            HPPwordList[key][i] = wordInKeys
             i += 1
         print(HPPwordList[key])
         HPPwordList1 = str(HPPwordList[key])
@@ -381,18 +370,14 @@ def DFCalcofHPPword(startyear):
 
 ############## Parallel execution of "DFCalcofHPPword" temporary part.
 
-if __name__ == '__main__':
-    p = Pool(2)
-    results = p.map_async(DFCalcofHPPword, range(1989, 1991))
-    # p.map(DFCalcofHPPword(1989))
-    # p.map(DFCalcofHPPword(1990))
-    results.wait()
+# if __name__ == '__main__':
+#     print("main")
+#     p = Pool(3)
+#     results = p.map_async(DFCalcofHPPword, range(1989, 1992))
+#     results.wait()
 
 
 ##############
-
-
-
 
 # Performance is usually relative to execution speed.
 # Separate code into two block to improve performance.
@@ -428,12 +413,10 @@ def getPatentAndCalcTF(start, end):
 
     global error1stCount
     global error2ndCount
+
     ############
 
 
-    starttmp = start
-    # urlNum = start + 1
-    # for url in reader:
 
     for head in range(start, end + 1):
 
@@ -1030,7 +1013,8 @@ savefile_4gram.close()
 savefile_2gram_TFIDF.close()
 savefile_3gram_TFIDF.close()
 savefile_4gram_TFIDF.close()
-savefile_DFList.close()
+savefile_DFList1st.close()
+savefile_DFList2nd.close()
 HPPListFile.close()
 # masterTxtFile.close()
 
