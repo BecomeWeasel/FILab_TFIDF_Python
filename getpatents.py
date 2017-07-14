@@ -72,7 +72,7 @@ from spacy.lemmatizer import lemmatize
 
 
 def getpatents(year):
-    timestart=time.time()
+    timestart = time.time()
     getpatents_directory = os.getcwd()  # get current working directory
     errorCount = 0
     nlp = English()
@@ -88,8 +88,6 @@ def getpatents(year):
     if not os.path.exists(getpatents_directory_output):
         os.mkdir(getpatents_directory_output, 0o755)
 
-    i = 0
-
     csvfile_PatNUM = open('(03) SolarPV_41585 Patent List ORIGINAL with dssc patents 9501 v0.2 only num.csv', 'r')
     csvfile_ouput_by_year = open(getpatents_directory_output + str(year) + '.csv', 'w+')
 
@@ -97,21 +95,38 @@ def getpatents(year):
     writer_yearoutput = csv.writer(csvfile_ouput_by_year, delimiter=',', quotechar=',', quoting=csv.QUOTE_MINIMAL)
 
     PATNUM = []
+    tmp=0
+    sumstart=0
+    j=0
+
+    for PatCountofYear in PATCOUNT_ORIGIN:
+        if tmp >=year-1976:
+            break
+        else:
+            sumstart+=PatCountofYear
+            tmp+=1
+    PAT_HEADER=sumstart # if PAT_HEADER=n,PAT_HEADER pointed nth row exactly in reader_PatNO.
+
 
     for PATNO in reader_PatNO:
         PATNUM.append(PATNO[0])
+    # print(PATNUM[206])
+    while j < PATCOUNT_ORIGIN[year % 1976]:
+        PAT_HEADER += 1 # HEADER가 어디선가 +1이 안되고있움.
+        # print(PAT_HEADER)
+        if PAT_HEADER == (sumstart+PATCOUNT_ORIGIN[year%1976]+1): # HEADER value exceed valid range of year's patent count.
+            break
+        j += 1
 
-    while i < PATCOUNT_ORIGIN[year % 1976]:
-        i += 1
-        url = ''.join(['https://patents.google.com/patent/', PATNUM[i - 1], '/en'])
+        url = ''.join(['https://patents.google.com/patent/', PATNUM[PAT_HEADER- 1], '/en']) # row 1 in reader_PatNO is stored PATNUM[0].
 
-        print("\nURL NUMBER : " + str(i) + " = " + url)
+        print("\nURL NUMBER : " + str(PAT_HEADER) + " = " + url+"\n")
 
         urlText, backCitation, pubDate = readWEBSITE.getText(url)
 
-        if urlText is None:
+        if urlText is None: # error occur at parsing patent.
             errorCount += 1
-            i=-1
+            j -=1
             continue
 
         doc = nlp(urlText.decode('utf-8'))
@@ -172,6 +187,8 @@ def getpatents(year):
                     splited_word.append(splited_single_word)
 
             test = " ".join(splited_word)
+            if test is "":
+                continue
             store_chunks_str_singlePatent.append(test)
         store_chunks_str_FullParent.append(store_chunks_str_singlePatent)
 
@@ -181,10 +198,15 @@ def getpatents(year):
 
     csvfile_PatNUM.close()
     csvfile_ouput_by_year.close()
-    timeend=time.time()
-    print("it takes {0} sec for the get Patent text of {1}".format((timeend - timestart),year))
+    timeend = time.time()
+    print("it takes {0} sec for the get Patent text of {1}".format((timeend - timestart), year))
 
     return None
 
 
-getpatents(1976)
+if __name__ == '__main__':
+    print("main")
+    p = Pool(2)
+    results = p.map_async(getpatents,range(1976,1978))
+    results.wait()
+
