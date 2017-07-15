@@ -76,8 +76,6 @@ def getpatents(year):
     getpatents_directory = os.getcwd()  # get current working directory
     errorCount = 0
     nlp = English()
-    nlp.vocab["the"].is_stop = True
-    nlp.vocab["THE"].is_stop = True
     PATCOUNT_ORIGIN = [205, 260, 280, 264, 298, 301, 293, 282, 332, 315, 346, 311, 265, 326, 375, 309, 348, 339, 446,
                        490, 488, 628, 723, 827, 884, 968, 1002, 1084, 1304, 1482, 1648, 1843, 2251, 2928, 3639, 3958,
                        3623, 2927, 2047, 904, 99
@@ -196,6 +194,7 @@ def getpatents(year):
         row_input = str(row_input)
         writer_yearoutput.writerow(row_input.split(","))
 
+    print("Error occur {0} times.".format(errorCount))
     csvfile_PatNUM.close()
     csvfile_ouput_by_year.close()
     timeend = time.time()
@@ -204,9 +203,39 @@ def getpatents(year):
     return None
 
 
+
+getpatents(1983)
+############ DONE #############
+##############################
+'''
+getpatents(2001)
+getpatents(2002)
+getpatents(2003)
+getpatents(2004)
+getpatents(2005)
+getpatents(2006)
+getpatents(2007)
+getpatents(2008)
+getpatents(2009)
+getpatents(2010)
+getpatents(2011)
+getpatents(2012)
+getpatents(2013)
+getpatents(2014)
+getpatents(2015)
+getpatents(2016)
+'''
 if __name__ == '__main__':
-    print("main")
-    p = Pool(2)
-    results = p.map_async(getpatents,range(1976,1978))
-    results.wait()
+    yearinput =1976
+    while yearinput < 2016:
+        p=Pool(4)
+        result=p.map_async(getpatents,range(yearinput,yearinput+4))
+        result.wait()
+        p.close()
+        print("Parallel complete for {0} to {1}".format(yearinput,yearinput+4))
+        yearinput+4
+
+
+
+
 
