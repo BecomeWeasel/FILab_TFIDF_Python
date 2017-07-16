@@ -1,4 +1,4 @@
-TFIDF Moudle and its result
+TFIDF Module and its result
 ===========================
 
 This repository store source code and result of our team's project.

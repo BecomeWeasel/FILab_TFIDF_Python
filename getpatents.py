@@ -93,39 +93,39 @@ def getpatents(year):
     writer_yearoutput = csv.writer(csvfile_ouput_by_year, delimiter=',', quotechar=',', quoting=csv.QUOTE_MINIMAL)
 
     PATNUM = []
-    tmp=0
-    sumstart=0
-    j=0
+    tmp = 0
+    sumstart = 0
+    j = 0
 
     for PatCountofYear in PATCOUNT_ORIGIN:
-        if tmp >=year-1976:
+        if tmp >= year - 1976:
             break
         else:
-            sumstart+=PatCountofYear
-            tmp+=1
-    PAT_HEADER=sumstart # if PAT_HEADER=n,PAT_HEADER pointed nth row exactly in reader_PatNO.
-
+            sumstart += PatCountofYear
+            tmp += 1
+    PAT_HEADER = sumstart  # if PAT_HEADER=n,PAT_HEADER pointed nth row exactly in reader_PatNO.
 
     for PATNO in reader_PatNO:
         PATNUM.append(PATNO[0])
     # print(PATNUM[206])
     while j < PATCOUNT_ORIGIN[year % 1976]:
-        PAT_HEADER += 1 # HEADER가 어디선가 +1이 안되고있움.
+        PAT_HEADER += 1  # HEADER가 어디선가 +1이 안되고있움.
         # print(PAT_HEADER)
-        if PAT_HEADER == (sumstart+PATCOUNT_ORIGIN[year%1976]+1): # HEADER value exceed valid range of year's patent count.
+        if PAT_HEADER == (
+                        sumstart + PATCOUNT_ORIGIN[year % 1976] + 1):  # HEADER value exceed valid range of year's patent count.
             break
-        j += 1
 
-        url = ''.join(['https://patents.google.com/patent/', PATNUM[PAT_HEADER- 1], '/en']) # row 1 in reader_PatNO is stored PATNUM[0].
+        url = ''.join(['https://patents.google.com/patent/', PATNUM[PAT_HEADER - 1],
+                       '/en'])  # row 1 in reader_PatNO is stored PATNUM[0].
 
-        print("\nURL NUMBER : " + str(PAT_HEADER) + " = " + url+"\n")
+        print("\nURL NUMBER : " + str(PAT_HEADER) + " = " + url + "\n")
 
         urlText, backCitation, pubDate = readWEBSITE.getText(url)
 
-        if urlText is None: # error occur at parsing patent.
+        if urlText is None:  # error occur at parsing patent.
             errorCount += 1
-            j -=1
             continue
+        j += 1
 
         doc = nlp(urlText.decode('utf-8'))
         chunks_store = []
@@ -194,7 +194,7 @@ def getpatents(year):
         row_input = str(row_input)
         writer_yearoutput.writerow(row_input.split(","))
 
-    print("Error occur {0} times.".format(errorCount))
+    print("Error occur {0} times. Success {1} times\n".format(errorCount,j))
     csvfile_PatNUM.close()
     csvfile_ouput_by_year.close()
     timeend = time.time()
@@ -203,8 +203,7 @@ def getpatents(year):
     return None
 
 
-
-getpatents(1983)
+getpatents(2008)
 ############ DONE #############
 ##############################
 '''
@@ -225,17 +224,14 @@ getpatents(2014)
 getpatents(2015)
 getpatents(2016)
 '''
+'''
 if __name__ == '__main__':
-    yearinput =1976
+    yearinput = 1976
     while yearinput < 2016:
-        p=Pool(4)
-        result=p.map_async(getpatents,range(yearinput,yearinput+4))
+        p = Pool()
+        result = p.map_async(getpatents, range(yearinput, yearinput + 2))
         result.wait()
         p.close()
-        print("Parallel complete for {0} to {1}".format(yearinput,yearinput+4))
-        yearinput+4
-
-
-
-
-
+        print("Parallel complete for {0} to {1}".format(yearinput, yearinput + 2))
+        yearinput += 2
+'''
