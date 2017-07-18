@@ -67,7 +67,7 @@ def getText(file):
 
     text = "\n".join([abs, clm, desc])
 
-
+    text = text.replace('"', '')
 
     # kill all script and style elements
     for script in soup(["script", "style"]):

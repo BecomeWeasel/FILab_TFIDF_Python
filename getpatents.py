@@ -71,7 +71,7 @@ import DFReader
 from spacy.lemmatizer import lemmatize
 
 
-def getpatents(year):
+def getpatents(targetyear):
     timestart = time.time()
     getpatents_directory = os.getcwd()  # get current working directory
     errorCount = 0
@@ -80,39 +80,39 @@ def getpatents(year):
                        490, 488, 628, 723, 827, 884, 968, 1002, 1084, 1304, 1482, 1648, 1843, 2251, 2928, 3639, 3958,
                        3623, 2927, 2047, 904, 99
                        ]
-    store_chunks_str_FullParent = []
+    store_chunks_FullParent = []
 
     getpatents_directory_output = getpatents_directory + "/Patents/"
     if not os.path.exists(getpatents_directory_output):
         os.mkdir(getpatents_directory_output, 0o755)
 
     csvfile_PatNUM = open('(03) SolarPV_41585 Patent List ORIGINAL with dssc patents 9501 v0.2 only num.csv', 'r')
-    csvfile_ouput_by_year = open(getpatents_directory_output + str(year) + '.csv', 'w+')
+    csvfile_ouput_by_year = open(getpatents_directory_output + str(targetyear) + '.csv', 'w+')
 
     reader_PatNO = csv.reader(csvfile_PatNUM, delimiter=' ', quotechar='|')
     writer_yearoutput = csv.writer(csvfile_ouput_by_year, delimiter=',', quotechar=',', quoting=csv.QUOTE_MINIMAL)
 
     PATNUM = []
-    tmp = 0
+    splited_words = 0
     sumstart = 0
-    j = 0
+    normalcount = 0
 
-    for PatCountofYear in PATCOUNT_ORIGIN:
-        if tmp >= year - 1976:
+    for PatCountofYear in PATCOUNT_ORIGIN: # this for loop make PAT_HEADER set into right position.
+        if splited_words >= targetyear - 1976: # e.g , if targetyaer is 1977, PAT_HEADER need to start from 206. so sumstart=205 and PAT HEADER started from 206.
             break
         else:
             sumstart += PatCountofYear
-            tmp += 1
+            splited_words += 1
     PAT_HEADER = sumstart  # if PAT_HEADER=n,PAT_HEADER pointed nth row exactly in reader_PatNO.
 
     for PATNO in reader_PatNO:
         PATNUM.append(PATNO[0])
     # print(PATNUM[206])
-    while j < PATCOUNT_ORIGIN[year % 1976]:
-        PAT_HEADER += 1  # HEADER가 어디선가 +1이 안되고있움.
+    while normalcount < PATCOUNT_ORIGIN[targetyear % 1976]:
+        PAT_HEADER += 1 # HEADER가 어디선가 +1이 안되고있움.
         # print(PAT_HEADER)
-        if PAT_HEADER == (
-                        sumstart + PATCOUNT_ORIGIN[year % 1976] + 1):  # HEADER value exceed valid range of year's patent count.
+        if PAT_HEADER == (sumstart + PATCOUNT_ORIGIN[targetyear % 1976] + 1):
+            # HEADER value exceed valid range of year's patent count.
             break
 
         url = ''.join(['https://patents.google.com/patent/', PATNUM[PAT_HEADER - 1],
@@ -125,11 +125,12 @@ def getpatents(year):
         if urlText is None:  # error occur at parsing patent.
             errorCount += 1
             continue
-        j += 1
+        normalcount += 1
 
         doc = nlp(urlText.decode('utf-8'))
         chunks_store = []
-        store_chunks_str_singlePatent = []
+        store_chunks_singlePatent = []
+        store_chunks_singlePatent.append(PAT_HEADER)
 
         for word in doc.noun_chunks:
             chunks_store.append(word)
@@ -137,10 +138,12 @@ def getpatents(year):
         for span in chunks_store:
 
             store_str = span.text  # get text part of span in chunks_store.
-            tmp = store_str.split()
+            splited_words = store_str.split()
             splited_word = []
-            for splited_single_word in tmp:
+            # store_chunks_singlePatent.append()
+            for splited_single_word in splited_words:
                 stop_TF = False
+                ########### Below down is temporary 'stop word list' ##########
                 if splited_single_word == 'a':
                     stop_TF = True
                 if splited_single_word == 'A':
@@ -179,31 +182,33 @@ def getpatents(year):
                     stop_TF = True
                 if splited_single_word == 'These':
                     stop_TF = True
-                if stop_TF is True:
+                if stop_TF is True: # if word is in stopword list,check next word.
                     continue
                 else:
                     splited_word.append(splited_single_word)
 
-            test = " ".join(splited_word)
-            if test is "":
+            combinedWord = " ".join(splited_word) # join word into one string.
+            if combinedWord is "": # if string is null, string of word don't append into list.
                 continue
-            store_chunks_str_singlePatent.append(test)
-        store_chunks_str_FullParent.append(store_chunks_str_singlePatent)
+            store_chunks_singlePatent.append(combinedWord) # store_chunks_str_singlePatents store all of words used in particular PATENT.
 
-    for row_input in store_chunks_str_FullParent:
+
+        store_chunks_FullParent.append(store_chunks_singlePatent) #store_chunks_str_FulParent store all of word used in all patent of targetyear.
+
+    for row_input in store_chunks_FullParent:
         row_input = str(row_input)
         writer_yearoutput.writerow(row_input.split(","))
 
-    print("Error occur {0} times. Success {1} times\n".format(errorCount,j))
+    print("Error occur {0} times. Success {1} times\n".format(errorCount,normalcount))
     csvfile_PatNUM.close()
     csvfile_ouput_by_year.close()
     timeend = time.time()
-    print("it takes {0} sec for the get Patent text of {1}".format((timeend - timestart), year))
+    print("it takes {0} sec for the get Patent text of {1}".format((timeend - timestart), targetyear))
 
     return None
 
 
-getpatents(2008)
+getpatents(1977)
 ############ DONE #############
 ##############################
 '''
