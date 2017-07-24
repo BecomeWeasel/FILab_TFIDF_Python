@@ -5,8 +5,10 @@ def getText(file):
     
     text = ""
     soup = BeautifulSoup(open(file), 'html.parser')
+
     '''
     
+#
 url = 'US7071258 - Graphene.html'
 html = urllib.urlopen(url).read()
 soup = BeautifulSoup(html, 'html.parser')
