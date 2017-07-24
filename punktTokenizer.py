@@ -6,6 +6,7 @@ from nltk.tokenize.punkt    import PunktSentenceTokenizer, PunktParameters
 #sentence_splitter = PunktSentenceTokenizer(punkt_param)
 #text = "is THAT what you mean, Mrs. Hussey?"
 #sentences = sentence_splitter.tokenize(text)
+#
 
 outputList1 = open('outputList1.txt', 'w') 
 outputList2 = open('outputList2.txt', 'w') 
