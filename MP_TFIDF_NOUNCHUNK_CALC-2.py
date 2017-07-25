@@ -1,60 +1,11 @@
 from __future__ import division
 from __future__ import print_function
-from alchemyapi import AlchemyAPI
-from pathlib import Path
-import json
-import time
-import nltk
-from nltk import ngrams
-from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.tokenize.punkt    import PunktSentenceTokenizer
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
+
 import csv
-import math
-import operator
-from operator import itemgetter
-import spacy
-from spacy import *
-from spacy.en import English
-from spacy.en import language_data
-from spacy.en import tokenizer_exceptions
-from spacy.en.language_data import update_exc, strings_to_exc
-from spacy.en.language_data import TOKENIZER_EXCEPTIONS, ORTH
-from spacy import symbols
-from spacy.symbols import *
-#import PyPDF2
-#import docx
-# import readDocx
-import readPDF
-import readHTML1
-import readHTML2
-# from tkFont import BOLD
-import punktTokenizer
-import preprocessor
-from SVOExtracter import findSVOs, getAllSubs, getAllObjs, isNegated
-import os
 import multiprocessing
-from multiprocessing import Process, current_process, Pool
-import os.path
-import itertools
-from scipy.special.basic import hyp0f1
-import imp
-import numpy
-from cytoolz import itertoolz
-from collections import Counter
-from collections import defaultdict
-import textacy 
-from textacy import *
-import spacy_utils_jree
-import constants_jree
-import extract_jree
-import ftfy
-import readWEBSITE
-import JjreeTFIDF
-import JjreeTFIDFNgram
-import DFReader 
-from spacy.lemmatizer import lemmatize
+from multiprocessing import Process
+
+
 #import getpatent
 
 
@@ -601,7 +552,7 @@ def TFIDFCALC(year):
 '''
 
 if __name__ == "__main__":
-    nlp = English()
+
     csvfile = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS TF words only.csv', 'r')
     reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     i=0
