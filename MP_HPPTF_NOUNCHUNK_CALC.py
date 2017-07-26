@@ -10,7 +10,7 @@ from spacy.en import English
 
 
 nlp = English()
-csvfile = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS ORIGINAL.csv', 'r')
+csvfile = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS ORIGINAL v0.2.csv', 'r')
 reader = csv.reader(csvfile, delimiter=',', quotechar=',')
 
 store_chunks_str_FullParent = []

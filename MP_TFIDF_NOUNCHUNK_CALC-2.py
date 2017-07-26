@@ -6,7 +6,6 @@ import multiprocessing
 from multiprocessing import Process
 
 
-#import getpatent
 
 
 
@@ -23,8 +22,8 @@ def DFCALCforward(word, DFCOUNT):
     '''
     word = word.lower()
     
-    csvfile = open('1976.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+    csvfile = open('1976.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -34,9 +33,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1977.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1977.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -46,9 +45,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1978.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1978.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -58,9 +57,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1979.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1979.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -70,9 +69,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1980.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1980.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -82,9 +81,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1981.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1981.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -94,9 +93,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1982.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1982.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -106,9 +105,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1983.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1983.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -118,9 +117,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1984.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1984.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -130,9 +129,9 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1985.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1985.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -142,10 +141,10 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    
-    csvfile = open('1996.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+
+    csvfile = open('1996.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -155,14 +154,14 @@ def DFCALCforward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    
+
+
 
 def DFCALCbackward(word, DFCOUNT):
 
-    
-    csvfile = open('2006.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2006.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -172,9 +171,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2007.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2007.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -184,9 +183,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2008.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2008.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -196,9 +195,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2009.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2009.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -208,9 +207,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2010.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2010.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -220,9 +219,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2011.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2011.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -232,9 +231,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2012.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2012.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -244,9 +243,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2013.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2013.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -256,9 +255,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2014.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2014.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -268,9 +267,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2015.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2015.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -280,9 +279,9 @@ def DFCALCbackward(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2016.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2016.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -291,11 +290,11 @@ def DFCALCbackward(word, DFCOUNT):
                 DFCOUNT[40] = DFCOUNT[40] + 1
                 break
     #print(DFCOUNT)
-    csvfile.close() 
-    
+    csvfile.close()
+
 def DFCALC3(word, DFCOUNT):
-    csvfile = open('1986.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+    csvfile = open('1986.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -305,9 +304,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1987.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1987.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -317,9 +316,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1988.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1988.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -329,9 +328,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1989.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1989.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -341,9 +340,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1990.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1990.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -353,9 +352,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1991.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1991.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -365,9 +364,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1992.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1992.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -377,9 +376,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1993.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1993.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -389,9 +388,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1994.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1994.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -401,9 +400,9 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1995.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1995.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -413,11 +412,11 @@ def DFCALC3(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    
+
+
 def DFCALC4(word, DFCOUNT):
-    csvfile = open('1997.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+    csvfile = open('1997.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -427,9 +426,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1998.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1998.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -439,9 +438,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('1999.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('1999.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -451,9 +450,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2000.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2000.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -463,9 +462,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2001.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2001.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -475,9 +474,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2002.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2002.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -487,9 +486,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2003.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2003.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -499,9 +498,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2004.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2004.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -511,9 +510,9 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    csvfile = open('2005.csv', 'r')
-    reader = csv.reader(csvfile, delimiter=',', quotechar=',')    
+
+    csvfile = open('2005.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     #print(word)
     for patent in reader:
         for patword in patent:
@@ -523,8 +522,8 @@ def DFCALC4(word, DFCOUNT):
                 break
     #print(DFCOUNT)
     csvfile.close()
-    
-    
+
+
 '''
 def TFIDFCALC(year):
     
@@ -550,10 +549,65 @@ def TFIDFCALC(year):
 
     print()
 '''
+def DFCALC(HPPNUM):
+    csvfile = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS TF ORIGINAL.csv', 'rU')
+    reader = csv.reader(csvfile, delimiter=',', quotechar=',')
+    i=0
+    errorCount = 0
+
+    store_chunks_str_FullParent = []
+    csvfile_ouput_by_year = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS DF PART '+str(HPPNUM)+' .csv', 'w+')
+    writer_yearoutput = csv.writer(csvfile_ouput_by_year, delimiter=',', quotechar=',', quoting=csv.QUOTE_MINIMAL)
+
+    year = 1976
+    patentNum = 0
+    for patNum in reader:
+        patentNum +=1
+        if patentNum <HPPNUM:
+            continue
+        elif patentNum > HPPNUM+1:
+            break
+        print(patentNum)
+        patWords = []
+        outputText = []
+        for word in patNum:
+            word = word.lstrip(' ')
+            patWords.append(word)
+
+        #print(patWords)
+        for word in patWords:
+
+            DFCOUNT = multiprocessing.Array('i',41)
+            print(word)
+            p1 = multiprocessing.Process(target = DFCALCforward, args = (word,DFCOUNT))
+            p2 = multiprocessing.Process(target = DFCALCbackward, args = (word,DFCOUNT))
+            p3 = multiprocessing.Process(target = DFCALC3, args = (word,DFCOUNT))
+            p4 = multiprocessing.Process(target = DFCALC4, args = (word,DFCOUNT))
+            p1.start()
+            p2.start()
+            p3.start()
+            p4.start()
+            p1.join()
+            p2.join()
+            p3.join()
+            p4.join()
+
+            #print(word)
+            #print(DFCOUNT[:])
+            DFCOUNTtext = str(DFCOUNT[:])
+            output = ",".join([str(word), str(DFCOUNTtext)])
+            #print(output)
+            outputText.append(output)
+
+        outputText = str(outputText)
+        #print(outputText)
+        writer_yearoutput.writerow(outputText.split(","))
+    csvfile.close()
 
 if __name__ == "__main__":
+    DFCALC(1)
 
-    csvfile = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS TF words only.csv', 'r')
+    '''csvfile = open('(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS TF words only.csv', 'rU')
     reader = csv.reader(csvfile, delimiter=',', quotechar=',')
     i=0
     errorCount = 0
@@ -603,7 +657,7 @@ if __name__ == "__main__":
         writer_yearoutput.writerow(outputText.split(","))
         patentNum +=1
     csvfile.close()
-           
+    '''
     '''    
     while i < PATCOUNT_ORIGIN[year % 1976]:
         i += 1
