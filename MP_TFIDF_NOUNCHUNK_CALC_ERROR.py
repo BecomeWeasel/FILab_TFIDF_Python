@@ -480,18 +480,26 @@ def DFCALC4(word, DFCOUNT):
     csvfile.close()
 
 
-def DFCHECK():
+def DFCHECK(WorkAmount):
     ERRORINPUT = open('INPUTFILENAMEHERE.csv', 'rU')
     reader = csv.reader(ERRORINPUT, delimiter=',', quotechar=',')
     ValidOutput = open('OUTFILENAME.csv', 'rU')
     writer_OUTPUT = csv.writer(ValidOutput, delimiter=',', quotechar=',')
-    word_DFCOUNTs = []
+    WorkDone = 0
     for row in reader:
-        word_DFCOUNTs = row
+        WorkDone += 1
+        if WorkDone == WorkAmount:
+            break
 
+        word_DFCOUNTs = []
+        word_DFCOUNTs = row
+        DFCountStore = []
+        outputText = []
         firstDF = 0
         secondDF = 0
         thirdDF = 0
+        errorTF = False
+        print("checking for words : " + word_DFCOUNTs[0])
 
         csv_1980 = open('1980.csv', 'rU')
         reader1980 = csv.reader(csv_1980, delimiter=',', quotechar=',')
@@ -503,7 +511,8 @@ def DFCHECK():
                     break
         csv_1980.close()
         if firstDF != word_DFCOUNTs[5]:
-            DFCALC(1, word_DFCOUNTs)
+            errorTF = True
+            DFCountStore = DFCALC(word_DFCOUNTs)
 
         csv_2000 = open('2000.csv', 'rU')
         reader2000 = csv.reader(csv_2000, delimiter=',', quotechar=',')
@@ -515,7 +524,8 @@ def DFCHECK():
                     break
         csv_2000.close()
         if secondDF != word_DFCOUNTs[25]:
-            DFCALC(1, word_DFCOUNTs)
+            errorTF = True
+            DFCountStore = DFCALC(word_DFCOUNTs)
 
         csv_2011 = open('2011.csv', 'rU')
         reader2011 = csv.reader(csv_2011, delimiter=',', quotechar=',')
@@ -527,12 +537,25 @@ def DFCHECK():
                     break
         csv_2011.close()
         if thirdDF != word_DFCOUNTs[36]:
-            DFCALC(1, word_DFCOUNTs)
+            errorTF = True
+            DFCountStore = DFCALC(word_DFCOUNTs)
+
+        if errorTF is True:
+            for i in range(1, 42):
+                word_DFCOUNTs[i] = DFCountStore[i - 1]
+
+        DFCOUNTtext = str(word_DFCOUNTs[1:])
+        output = ",".join([str(word_DFCOUNTs[0]), str(DFCOUNTtext)])
+        outputText.append(output)
+
+        outputText = str(outputText)
+        writer_OUTPUT.writerow(outputText.split(","))
+
+    ValidOutput.close()
+    ERRORINPUT.close()
 
 
-
-
-def DFCALC(HPPNUM, word_DFCOUNTs):
+def DFCALC(word_DFCOUNTs):
     DFCOUNT = multiprocessing.Array('i', 41)
 
     p1 = multiprocessing.Process(target=DFCALCforward, args=(word_DFCOUNTs[0], DFCOUNT))
@@ -548,3 +571,6 @@ def DFCALC(HPPNUM, word_DFCOUNTs):
     p3.join()
     p4.join()
     return DFCOUNT
+
+
+DFCHECK(500)
