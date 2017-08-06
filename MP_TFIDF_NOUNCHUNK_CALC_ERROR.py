@@ -495,10 +495,10 @@ def DFCHECK(WorkAmount):
         word_DFCOUNTs = row
         DFCountStore = []
         outputText = []
-        firstDF = 0
-        secondDF = 0
-        thirdDF = 0
-        errorTF = False
+        firstDF = 0  # firstDF is compared with word_DFCOUNTs[5],which is old DFCOUNT of 1980 in inputfile.
+        secondDF = 0  # secondDF is similar to firstDF.
+        thirdDF = 0  # thirdDF is similar to firstDF.
+        errorTF = False  # if errorTF boolean value is true,then,word in row have invalid DFCOUNT value.
         print("checking for words : " + word_DFCOUNTs[0])
 
         csv_1980 = open('1980.csv', 'rU')
@@ -511,8 +511,9 @@ def DFCHECK(WorkAmount):
                     break
         csv_1980.close()
         if firstDF != word_DFCOUNTs[5]:
-            errorTF = True
-            DFCountStore = DFCALC(word_DFCOUNTs)
+            # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
+            errorTF = True  # Tell user to old DFCOUNT is invalid.
+            DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
 
         csv_2000 = open('2000.csv', 'rU')
         reader2000 = csv.reader(csv_2000, delimiter=',', quotechar=',')
@@ -523,9 +524,12 @@ def DFCHECK(WorkAmount):
                     secondDF = secondDF + 1
                     break
         csv_2000.close()
-        if secondDF != word_DFCOUNTs[25]:
-            errorTF = True
-            DFCountStore = DFCALC(word_DFCOUNTs)
+        if secondDF != word_DFCOUNTs[25] and errorTF is False:
+            # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
+            # And if errorTF is True, it means that DFCALC is already called, so don't need to do that again.
+
+            errorTF = True  # Tell user to old DFCOUNT is invalid.
+            DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
 
         csv_2011 = open('2011.csv', 'rU')
         reader2011 = csv.reader(csv_2011, delimiter=',', quotechar=',')
@@ -536,11 +540,17 @@ def DFCHECK(WorkAmount):
                     thirdDF = thirdDF + 1
                     break
         csv_2011.close()
-        if thirdDF != word_DFCOUNTs[36]:
-            errorTF = True
-            DFCountStore = DFCALC(word_DFCOUNTs)
+        if thirdDF != word_DFCOUNTs[36] and errorTF is False:
+            # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
+            # And if errorTF is True, it means that DFCALC is already called, so don't need to do that again.
+
+            errorTF = True  # Tell user to old DFCOUNT is invalid.
+            DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
 
         if errorTF is True:
+            # if errorTF value is true ,it means that calling of DFCALC is done ,
+            # so old and invalid DFCOUNT in word_DFCOUNT sholud be changed.
+
             for i in range(1, 42):
                 word_DFCOUNTs[i] = DFCountStore[i - 1]
 
