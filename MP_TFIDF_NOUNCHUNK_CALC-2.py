@@ -7,8 +7,6 @@ from multiprocessing import Process
 
 
 
-
-
 def DFCALCforward(word, DFCOUNT):
     '''
     DFCOUNT = [0,0,0,0,0,
