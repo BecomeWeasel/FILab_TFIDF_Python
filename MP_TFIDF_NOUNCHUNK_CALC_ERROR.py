@@ -3,7 +3,12 @@ from __future__ import print_function
 
 import csv
 import multiprocessing
+import sys
 from multiprocessing import Process
+from array import *
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 
 def DFCALCforward(word, DFCOUNT):
@@ -481,16 +486,17 @@ def DFCALC4(word, DFCOUNT):
 
 
 def DFCHECK(WorkAmount):
-    ERRORINPUT = open('INPUTFILENAMEHERE.csv', 'rU')
+    ERRORINPUT = open(
+        '(03)DSSC_9501 PatSnap v.02 HPP List ONLY HPP only patnum RESULTS WORDS DF FULL ORIGINAL each word in one row FINAL v0.3 unifying duplicates.csv',
+        'rU')
     reader = csv.reader(ERRORINPUT, delimiter=',', quotechar=',')
-    ValidOutput = open('OUTFILENAME.csv', 'rU')
+    ValidOutput = open('OUTFILENAME.csv', 'w+')
     writer_OUTPUT = csv.writer(ValidOutput, delimiter=',', quotechar=',')
     WorkDone = 0
     for row in reader:
         WorkDone += 1
         if WorkDone == WorkAmount:
             break
-
         word_DFCOUNTs = []
         word_DFCOUNTs = row
         DFCountStore = []
@@ -499,14 +505,16 @@ def DFCHECK(WorkAmount):
         secondDF = 0  # secondDF is similar to firstDF.
         thirdDF = 0  # thirdDF is similar to firstDF.
         errorTF = False  # if errorTF boolean value is true,then,word in row have invalid DFCOUNT value.
+
+        word_DFCOUNTs[0] = word_DFCOUNTs[0].lstrip(' ')
         print("checking for words : " + word_DFCOUNTs[0])
 
         csv_1980 = open('1980.csv', 'rU')
         reader1980 = csv.reader(csv_1980, delimiter=',', quotechar=',')
-        for patent in reader1980:
-            for patword in patent:
-                patword = patword.lower().lstrip(' ')
-                if str(patword) == str(word_DFCOUNTs[0]):
+        for patent_1980 in reader1980:
+            for patword_1980 in patent_1980:
+                patword_1980 = patword_1980.lower().lstrip(' ')
+                if str(patword_1980) == str(word_DFCOUNTs[0]):
                     firstDF = firstDF + 1
                     break
         csv_1980.close()
@@ -517,38 +525,39 @@ def DFCHECK(WorkAmount):
 
         csv_2000 = open('2000.csv', 'rU')
         reader2000 = csv.reader(csv_2000, delimiter=',', quotechar=',')
-        for patent in reader2000:
-            for patword in patent:
-                patword = patword.lower().lstrip(' ')
-                if str(patword) == str(word_DFCOUNTs[0]):
+        for patent_2000 in reader2000:
+            for patword_2000 in patent_2000:
+                patword_2000 = patword_2000.lower().lstrip(' ')
+                if str(patword_2000) == str(word_DFCOUNTs[0]):
                     secondDF = secondDF + 1
                     break
         csv_2000.close()
         if secondDF != word_DFCOUNTs[25] and errorTF is False:
             # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
-            # And if errorTF is True, it means that DFCALC is already called, so don't need to do that again.
+            # And if errorTF is True, it means that DFCALC was already called, so don't need to do that again.
 
             errorTF = True  # Tell user to old DFCOUNT is invalid.
-            DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
+            DFCountStore = DFCALC(
+                word_DFCOUNTs) # So to correct invalid DFCOUNT, call DFCALC. # TODO: not sure this line works well.
 
         csv_2011 = open('2011.csv', 'rU')
         reader2011 = csv.reader(csv_2011, delimiter=',', quotechar=',')
-        for patent in reader2011:
-            for patword in patent:
-                patword = patword.lower().lstrip(' ')
-                if str(patword) == str(word_DFCOUNTs[0]):
+        for patent_2011 in reader2011:
+            for patword_2011 in patent_2011:
+                patword_2011 = patword_2011.lower().lstrip(' ')
+                if str(patword_2011) == str(word_DFCOUNTs[0]):
                     thirdDF = thirdDF + 1
                     break
         csv_2011.close()
         if thirdDF != word_DFCOUNTs[36] and errorTF is False:
             # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
-            # And if errorTF is True, it means that DFCALC is already called, so don't need to do that again.
+            # And if errorTF is True, it means that DFCALC was already called, so don't need to do that again.
 
             errorTF = True  # Tell user to old DFCOUNT is invalid.
             DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
 
         if errorTF is True:
-            # if errorTF value is true ,it means that calling of DFCALC is done ,
+            # if errorTF value is true ,it means that calling of DFCALC was happen.
             # so old and invalid DFCOUNT in word_DFCOUNT sholud be changed.
 
             for i in range(1, 42):
@@ -580,7 +589,10 @@ def DFCALC(word_DFCOUNTs):
     p2.join()
     p3.join()
     p4.join()
-    return DFCOUNT
+    print(DFCOUNT)
+    DFCOUNTRETURN=[]
+    DFCOUNTRETURN=DFCOUNT[:]
+    return DFCOUNTRETURN
 
 
-DFCHECK(500)
+DFCHECK(10)
