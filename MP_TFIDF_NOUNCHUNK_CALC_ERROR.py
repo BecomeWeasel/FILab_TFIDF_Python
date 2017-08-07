@@ -520,8 +520,11 @@ def DFCHECK(WorkAmount):
         csv_1980.close()
         if firstDF != word_DFCOUNTs[5]:
             # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
-            errorTF = True  # Tell user to old DFCOUNT is invalid.
+            print("Error at " + word_DFCOUNTs[0] + " in 1980")  # Tell user to old DFCOUNT is invalid.
+            errorTF = True  # Error detection
             DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
+        else:
+            print("No error at " + word_DFCOUNTs[0] + " in 1980")
 
         csv_2000 = open('2000.csv', 'rU')
         reader2000 = csv.reader(csv_2000, delimiter=',', quotechar=',')
@@ -535,10 +538,12 @@ def DFCHECK(WorkAmount):
         if secondDF != word_DFCOUNTs[25] and errorTF is False:
             # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
             # And if errorTF is True, it means that DFCALC was already called, so don't need to do that again.
-
-            errorTF = True  # Tell user to old DFCOUNT is invalid.
-            DFCountStore = DFCALC(
-                word_DFCOUNTs) # So to correct invalid DFCOUNT, call DFCALC. # TODO: not sure this line works well.
+            print("Error at " + word_DFCOUNTs[0] + " in 2000")  # Tell user to old DFCOUNT is invalid.
+            errorTF = True  # Error detection
+            DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
+            #  TODO: not sure this line works well.
+        else:
+            print("No error at " + word_DFCOUNTs[0] + " in 2000")
 
         csv_2011 = open('2011.csv', 'rU')
         reader2011 = csv.reader(csv_2011, delimiter=',', quotechar=',')
@@ -552,9 +557,11 @@ def DFCHECK(WorkAmount):
         if thirdDF != word_DFCOUNTs[36] and errorTF is False:
             # check old DFCOUNT. If it is invalid, DFCALC procedure will be called.
             # And if errorTF is True, it means that DFCALC was already called, so don't need to do that again.
-
-            errorTF = True  # Tell user to old DFCOUNT is invalid.
+            print("Error at " + word_DFCOUNTs[0] + " in 2010")  # Tell user to old DFCOUNT is invalid.
+            errorTF = True  # Error detection
             DFCountStore = DFCALC(word_DFCOUNTs)  # So to correct invalid DFCOUNT, call DFCALC.
+        else:
+            print("No error at " + word_DFCOUNTs[0] + " in 2010")
 
         if errorTF is True:
             # if errorTF value is true ,it means that calling of DFCALC was happen.
@@ -590,8 +597,8 @@ def DFCALC(word_DFCOUNTs):
     p3.join()
     p4.join()
     print(DFCOUNT)
-    DFCOUNTRETURN=[]
-    DFCOUNTRETURN=DFCOUNT[:]
+    DFCOUNTRETURN = []
+    DFCOUNTRETURN = DFCOUNT[:]
     return DFCOUNTRETURN
 
 
