@@ -8,3 +8,5 @@ DF LIST OUTPUT 3GRAM.csv
 DF LIST OUTPUT 4GRAM.csv
 TF-IDF OUTPUT ONLY.csv
 __pycache__
+
+.DS*
